@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.textfield.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    style="@style/TextFieldTheme"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:endIconDrawable="@drawable/ic_textfield_show"
+    tools:endIconMode="password_toggle"
+    tools:startIconDrawable="@drawable/ic_textfield_password">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/editText"
+        style="@style/TextFieldInputTheme"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:ellipsize="end"
+        android:inputType="text"
+        android:maxLines="1"
+        tools:hint="Passwordddddddddddddddddddddddddddddddddd" />
+
+</com.google.android.material.textfield.TextInputLayout>

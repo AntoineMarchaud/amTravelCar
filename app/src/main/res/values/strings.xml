@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">TravelCar</string>
+
+    <string name="tab_search">Recherche</string>
+    <string name="tab_my_account">Mon compte</string>
+
+    <!-- search -->
+    <string name="search_item">Recherche</string>
+    <string name="no_options">Pas d\'options !</string>
+    <string name="no_car_error">Rien à afficher</string>
+    <string name="search_car">Rechercher une voiture</string>
+
+    <string name="transition_name_picture">transition_picture_%d</string>
+    <string name="transition_make_and_model">transition_make_and_mode_%d</string>
+    <string name="transition_year">transition_year_%d</string>
+    <string name="transition_options">transition_options_%d</string>
+
+    <!-- account -->
+    <!-- empty -->
+    <string name="new_user_title">Pas de compte !</string>
+    <string name="new_user_description">Créer un compte</string>
+
+
+    <!-- modify account -->
+    <string name="change_photo_title">Changer de photo</string>
+    <string name="change_photo_take_photo">Prendre une photo</string>
+    <string name="change_photo_select_photo">Sélectionner une photo</string>
+
+    <string name="save_account">Enregistrer</string>
+    <string name="hint_first_name">Prénom</string>
+    <string name="hint_last_name">Nom de famille</string>
+    <string name="hint_address">Addresse</string>
+    <string name="hint_birthday">Date d\'anniversaire</string>
+
+
+</resources>

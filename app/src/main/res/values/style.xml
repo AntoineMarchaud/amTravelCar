@@ -1,0 +1,98 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="CustomBottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <!-- fullscreen mode -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="enableEdgeToEdge">true</item>
+        <item name="paddingBottomSystemWindowInsets">false</item>
+
+        <!-- corners -->
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+    <!-- no error, no information, no focus mode, no hint -->
+    <style name="TextFieldSimpleTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+
+        <!-- global background  -->
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+
+        <item name="hintEnabled">true</item>
+
+        <!-- left icon -->
+        <item name="startIconTint">@color/dark_1</item>
+
+        <!-- Label -->
+        <item name="android:textColorHint">@color/dark_1</item>
+        <item name="hintTextColor">@color/dark_1</item>
+
+        <!-- bottom line -->
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+
+        <!-- Trailing icon (right icon) -->
+        <item name="endIconTint">@android:color/black</item>
+
+    </style>
+
+    <!-- TextField -->
+    <style name="TextFieldInputTheme">
+        <item name="android:textColor">@color/dark_1</item>
+    </style>
+
+    <style name="TextFieldTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+
+        <!-- global background  -->
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+
+        <!-- left icon -->
+        <item name="startIconTint">@color/dark_1</item>
+
+        <!-- Label -->
+        <item name="android:textColorHint">@color/dark_1</item>
+        <item name="hintTextColor">@color/dark_1</item>
+
+        <!-- bottom line -->
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+
+        <!-- Trailing icon (right icon) -->
+        <item name="endIconTint">@color/dark_1</item>
+
+        <!-- error / helper text -->
+        <item name="errorTextColor">@android:color/holo_red_dark</item>
+        <item name="helperTextTextColor">@color/grey_5</item>
+
+    </style>
+
+    <!-- TextField -->
+    <style name="TextFieldDropTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+
+        <!-- global background  -->
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+
+        <!-- Label -->
+        <item name="android:textColorHint">@color/dark_1</item>
+        <item name="hintTextColor">@color/dark_1</item>
+
+        <!-- bottom line -->
+        <item name="boxStrokeColor">@android:color/transparent</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+
+        <!-- Trailing icon (right icon) -->
+        <item name="endIconTint">@color/dark_1</item>
+        <item name="endIconMode">dropdown_menu</item>
+
+    </style>
+
+</resources>

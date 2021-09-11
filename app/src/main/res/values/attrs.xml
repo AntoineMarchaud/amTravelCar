@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextFieldView">
+        <attr name="custom_hint" format="string" />
+        <attr name="custom_endIconMode">
+            <!-- The view will display a custom icon specified by the user. -->
+            <enum name="custom" value="-1" />
+            <!-- No end icon. -->
+            <enum name="none" value="0" />
+            <!-- The view will display a toggle when the EditText has a password. -->
+            <enum name="password_toggle" value="1" />
+            <!-- The view will display a clear text button while the EditText contains input. -->
+            <enum name="clear_text" value="2" />
+        </attr>
+        <attr name="custom_startIconDrawable" format="reference" /> <!-- start icon -->
+        <attr name="custom_endIconDrawable" format="reference" /> <!-- right icon -->
+        <attr name="custom_inputType">
+            <flag name="none" value="0x00000000" />
+            <flag name="text" value="0x00000001" />
+            <flag name="textPassword" value="0x00000081" />
+            <flag name="number" value="0x00000002" />
+            <flag name="numberDecimal" value="0x00002002" />
+            <flag name="textEmailAddress" value="0x00000021" />
+            <flag name="phone" value="0x00000003" />
+            <flag name="textPostalAddress" value="0x00000071" />
+        </attr>
+        <attr name="custom_imeoption">
+            <flag name="normal" value="0x00000000" />
+            <flag name="actionUnspecified" value="0x00000000" />
+            <flag name="actionNone" value="0x00000001" />
+            <flag name="actionGo" value="0x00000002" />
+            <flag name="actionSearch" value="0x00000003" />
+            <flag name="actionSend" value="0x00000004" />
+            <flag name="actionNext" value="0x00000005" />
+            <flag name="actionDone" value="0x00000006" />
+        </attr>
+        <attr name="custom_right_drawable_tint" format="color" />
+        <attr name="custom_info_text" format="string" />
+        <attr name="custom_error_text" format="string" />
+    </declare-styleable>
+</resources>

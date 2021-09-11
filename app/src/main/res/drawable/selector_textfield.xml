@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/textfield_background_focused" android:state_hovered="true" />
+    <item android:drawable="@drawable/textfield_background_focused" android:state_focused="true" />
+    <item android:drawable="@drawable/textfield_background" android:state_enabled="true"/>
+</selector>
