@@ -7,4 +7,5 @@ interface UserRepository {
     fun getUserFlow() : Flow<AppUser?>
     suspend fun getUser() : AppUser?
     suspend fun manageUser(appUser: AppUser)
+    suspend fun deleteUser()
 }

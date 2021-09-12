@@ -38,4 +38,10 @@ class AppUserRepository @Inject constructor(
             )
         }
     }
+
+    override suspend fun deleteUser() {
+        travelUserDao.getUser()?.let {
+            travelUserDao.deleteUser(it)
+        }
+    }
 }

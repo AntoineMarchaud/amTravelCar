@@ -43,6 +43,7 @@
     <string name="account_modify_hint_birthday">Date d\'anniversaire</string>
 
     <string name="account_modify_save">Enregistrer</string>
+    <string name="account_modify_erase">Effacer</string>
     <string name="account_modify_user_not_saved">Vos modification n\'ont pas été enregistréés</string>
 
 </resources>

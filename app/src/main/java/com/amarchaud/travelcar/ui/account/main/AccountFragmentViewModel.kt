@@ -41,14 +41,14 @@ class AccountFragmentViewModel @Inject constructor(
     }
 
     private fun transformUserToListItem(appUser: AppUser?): List<UserListItem> {
-
+ 
         val l = mutableListOf<UserListItem>()
 
         if (appUser == null) {
             l.add(UserListItem.NoUser)
         } else {
             if (appUser.photoUri == null) {
-                l.add(UserListItem.NoPhoto(appUser.firstName?.get(0)!!))
+                l.add(UserListItem.NoPhoto(appUser.firstName?.get(0) ?: '?'))
             } else {
                 l.add(UserListItem.Photo(appUser.photoUri!!))
             }

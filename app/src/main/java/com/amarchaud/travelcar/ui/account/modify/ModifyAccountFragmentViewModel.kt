@@ -3,6 +3,7 @@ package com.amarchaud.travelcar.ui.account.modify
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.amarchaud.travelcar.data.repository.user.AppUserRepository
 import com.amarchaud.travelcar.domain.local.user.AppUser
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,4 +29,8 @@ class ModifyAccountFragmentViewModel @Inject constructor(
             || !appUser?.lastName.isNullOrEmpty()
             || !appUser?.address.isNullOrEmpty()
             || appUser?.birthday != null
+
+    suspend fun eraseAccount() {
+        appUserRepository.deleteUser()
+    }
 }

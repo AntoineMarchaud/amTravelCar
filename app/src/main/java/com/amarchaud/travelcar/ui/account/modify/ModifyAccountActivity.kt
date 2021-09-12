@@ -29,7 +29,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -81,6 +81,7 @@ class ModifyAccountActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -104,6 +105,17 @@ class ModifyAccountActivity : AppCompatActivity() {
                     putExtra(ARG_USER_SAVED, viewModel.appUser)
                 })
                 finish()
+                overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
+            }
+
+            deleteButton.isEnabled = userToModify != null
+            deleteButton.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.eraseAccount()
+                    setResult(RESULT_CANCELED)
+                    finish()
+                    overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
+                }
             }
         }
 
@@ -270,6 +282,7 @@ class ModifyAccountActivity : AppCompatActivity() {
                 super.onBackPressed()
                 setResult(RESULT_CANCELED)
                 finish()
+                overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
             }
         }
     }
@@ -282,10 +295,12 @@ class ModifyAccountActivity : AppCompatActivity() {
                     putExtra(ARG_USER_SAVED, viewModel.appUser)
                 })
                 finish()
+                overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
             }
             .setNegativeButton(getString(android.R.string.cancel)) { dialog, id ->
                 setResult(RESULT_CANCELED)
                 finish()
+                overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
             }
             .create()
             .show()

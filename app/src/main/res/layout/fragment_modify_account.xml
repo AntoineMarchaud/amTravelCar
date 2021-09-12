@@ -117,4 +117,14 @@
         android:paddingHorizontal="@dimen/margin_big"
         android:text="@string/account_modify_save" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_big"
+        android:background="@drawable/selector_button"
+        android:paddingHorizontal="@dimen/margin_big"
+        android:text="@string/account_modify_erase" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>
