@@ -1,14 +1,13 @@
 package com.amarchaud.travelcar.ui.account.modify
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.ArrayAdapter
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -280,11 +279,7 @@ class ModifyAccountActivity : AppCompatActivity() {
 
 
     private fun launchSelectPhoto() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        intent.flags = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
-        imageDiskResult.launch(intent)
+        selectImageFromGalleryResult.launch("image/*")
     }
 
     private fun launchTakePhoto() {
@@ -328,26 +323,22 @@ class ModifyAccountActivity : AppCompatActivity() {
     }
 
 
-    private val imageDiskResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                if (result.data != null) {
-                    val uri = result.data?.data
-                    uri?.let {
+    private val selectImageFromGalleryResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let {
 
-                        Glide.with(binding.chooseImage)
-                            .load(it)
-                            .into(binding.chooseImage)
+                    Glide.with(binding.chooseImage)
+                        .load(it)
+                        .into(binding.chooseImage)
 
-                        contentResolver.takePersistableUriPermission(
-                            it,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                        )
-                        viewModel.appUser?.photoUri = it // save
-                    }
+                    contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
+                    viewModel.appUser?.photoUri = it // save
                 }
             }
-        }
+
 
     private val permissionCameraResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
