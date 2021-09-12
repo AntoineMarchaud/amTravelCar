@@ -189,9 +189,11 @@ class ModifyAccountActivity : AppCompatActivity() {
             with(binding) {
                 this.firstNameEditText.setText(user.firstName)
                 this.lastNameEditText.setText(user.lastName)
-                Glide.with(binding.chooseImage)
-                    .load(user.photoUri)
-                    .into(binding.chooseImage)
+                user.photoUri?.let {
+                    Glide.with(binding.chooseImage)
+                        .load(it)
+                        .into(binding.chooseImage)
+                }
                 this.addressEditText.setText(user.address)
                 this.birthdayEditText.setText(user.birthday?.toShortDate())
             }
