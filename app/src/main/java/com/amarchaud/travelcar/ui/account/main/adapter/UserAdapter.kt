@@ -11,6 +11,7 @@ import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.*
 import com.amarchaud.travelcar.ui.account.main.model.UserListItem
 import com.amarchaud.travelcar.utils.extensions.toLongDate
+import com.bumptech.glide.Glide
 
 
 class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListItem.DIFF_CALLBACK) {
@@ -65,7 +66,9 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
 
         class Photo(private val binding: ItemAccountPhotoBinding) : ViewHolder(binding) {
             fun bind(item: UserListItem.Photo) = with(binding) {
-                accountPhoto.setImageURI(item.uri)
+                Glide.with(binding.root.context)
+                    .load(item.uri)
+                    .into(binding.accountPhoto)
             }
         }
 

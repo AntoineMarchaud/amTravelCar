@@ -22,6 +22,7 @@ import com.amarchaud.travelcar.ui.account.modify.photo_dialog.ChoicePhotoDialog
 import com.amarchaud.travelcar.utils.extensions.toMilliseconds
 import com.amarchaud.travelcar.utils.extensions.toShortDate
 import com.amarchaud.travelcar.utils.textChanges
+import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -187,7 +188,9 @@ class ModifyAccountActivity : AppCompatActivity() {
             with(binding) {
                 this.firstNameEditText.setText(user.firstName)
                 this.lastNameEditText.setText(user.lastName)
-                this.chooseImage.setImageURI(user.photoUri)
+                Glide.with(binding.chooseImage)
+                    .load(user.photoUri)
+                    .into(binding.chooseImage)
                 this.addressEditText.setText(user.address)
                 this.birthdayEditText.setText(user.birthday?.toShortDate())
             }
@@ -331,7 +334,11 @@ class ModifyAccountActivity : AppCompatActivity() {
                 if (result.data != null) {
                     val uri = result.data?.data
                     uri?.let {
-                        binding.chooseImage.setImageURI(it)
+
+                        Glide.with(binding.chooseImage)
+                            .load(it)
+                            .into(binding.chooseImage)
+
                         contentResolver.takePersistableUriPermission(
                             it,
                             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
