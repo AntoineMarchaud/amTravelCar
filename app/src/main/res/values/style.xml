@@ -80,6 +80,7 @@
         <!-- Label -->
         <item name="android:textColorHint">@color/dark_1</item>
         <item name="hintTextColor">@color/dark_1</item>
+        <item name="hintTextAppearance">@style/H5</item>
 
         <!-- bottom line -->
         <item name="boxStrokeColor">@android:color/transparent</item>
@@ -96,7 +97,7 @@
     <style name="TextFieldInputTheme">
         <!-- Input Text -->
         <item name="android:textColor">@color/dark_1</item>
-        <item name="android:textAppearance">@style/H4</item>
+        <item name="android:textAppearance">@style/H5</item>
     </style>
 
 
