@@ -18,6 +18,7 @@ import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.FragmentModifyAccountBinding
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.ui.account.modify.photo_dialog.ChoicePhotoDialog
+import com.amarchaud.travelcar.utils.extensions.nowToMilliseconds
 import com.amarchaud.travelcar.utils.extensions.toMilliseconds
 import com.amarchaud.travelcar.utils.extensions.toShortDate
 import com.amarchaud.travelcar.utils.textChanges
@@ -71,12 +72,12 @@ class ModifyAccountActivity : AppCompatActivity() {
             .setSessionToken(autoCompleteToken)
     }
 
-    private val tempPhoto: File by lazy {
-        File.createTempFile("IMG_", ".jpg", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
+    private val tempFile: File by lazy {
+        File.createTempFile("IMG_", ".png", getExternalFilesDir(Environment.DIRECTORY_PICTURES))
     }
 
     private val photoUri by lazy {
-        FileProvider.getUriForFile(this, "${packageName}.provider", tempPhoto)
+        FileProvider.getUriForFile(this, "${packageName}.provider", tempFile)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -164,11 +165,12 @@ class ModifyAccountActivity : AppCompatActivity() {
             calendarConstraints.apply {
                 this.setOpenAt(it.toMilliseconds())
             }
+        } ?: calendarConstraints.apply {
+            this.setOpenAt(nowToMilliseconds())
         }
+
         calendarConstraints.apply {
-            val now = LocalDate.now()
-            val local = LocalDateTime.of(now.year, now.month, 1, 0, 0)
-            this.setEnd(local.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+            this.setEnd(nowToMilliseconds())
         }
         builder.setCalendarConstraints(calendarConstraints.build())
         val picker = builder.build()
@@ -325,19 +327,14 @@ class ModifyAccountActivity : AppCompatActivity() {
 
     private val selectImageFromGalleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-                uri?.let {
+            uri?.let {
+                Glide.with(binding.chooseImage)
+                    .load(it)
+                    .into(binding.chooseImage)
 
-                    Glide.with(binding.chooseImage)
-                        .load(it)
-                        .into(binding.chooseImage)
-
-                    contentResolver.takePersistableUriPermission(
-                        it,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                    viewModel.appUser?.photoUri = it // save
-                }
+                viewModel.appUser?.photoUri = it // save
             }
+        }
 
 
     private val permissionCameraResult =
