@@ -9,12 +9,9 @@ import android.transition.TransitionValues
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Property
-
 import android.util.TypedValue
-
-import android.widget.TextView
-
 import android.view.ViewGroup
+import android.widget.TextView
 import com.amarchaud.travelcar.R
 
 

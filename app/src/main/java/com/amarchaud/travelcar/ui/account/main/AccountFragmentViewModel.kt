@@ -40,30 +40,30 @@ class AccountFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun transformUserToListItem(appUser: AppUser?): List<UserListItem> {
- 
-        val l = mutableListOf<UserListItem>()
+    private fun transformUserToListItem(appUser: AppUser?): List<UserListItem>? {
 
         if (appUser == null) {
-            l.add(UserListItem.NoUser)
+            return emptyList()
+        }
+
+        val l = mutableListOf<UserListItem>()
+
+        if (appUser.photoUri == null) {
+            l.add(UserListItem.NoPhoto(appUser.firstName?.get(0) ?: '?'))
         } else {
-            if (appUser.photoUri == null) {
-                l.add(UserListItem.NoPhoto(appUser.firstName?.get(0) ?: '?'))
-            } else {
-                l.add(UserListItem.Photo(appUser.photoUri!!))
-            }
+            l.add(UserListItem.Photo(appUser.photoUri!!))
+        }
 
-            appUser.firstName?.let {
-                l.add(UserListItem.Identity(it, appUser.lastName))
-            }
+        appUser.firstName?.let {
+            l.add(UserListItem.Identity(it, appUser.lastName))
+        }
 
-            appUser.address?.let {
-                l.add(UserListItem.Address(it))
-            }
+        appUser.address?.let {
+            l.add(UserListItem.Address(it))
+        }
 
-            appUser.birthday?.let {
-                l.add(UserListItem.Birthday(it))
-            }
+        appUser.birthday?.let {
+            l.add(UserListItem.Birthday(it))
         }
 
         return l

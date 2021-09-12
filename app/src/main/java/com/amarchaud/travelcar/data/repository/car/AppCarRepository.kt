@@ -6,11 +6,9 @@ import com.amarchaud.travelcar.data.remote.TravelCarApi
 import com.amarchaud.travelcar.domain.db.car.EntityCarOptionCrossRef
 import com.amarchaud.travelcar.domain.db.car.EntityOption
 import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.domain.remote.car.ApiCar
 import com.amarchaud.travelcar.utils.translator.CarTranslator.toAppCar
 import com.amarchaud.travelcar.utils.translator.CarTranslator.toEntityCar
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import retrofit2.Call

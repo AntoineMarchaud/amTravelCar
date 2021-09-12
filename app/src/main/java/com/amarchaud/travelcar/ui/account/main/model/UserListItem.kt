@@ -6,7 +6,6 @@ import org.threeten.bp.LocalDate
 
 sealed class UserListItem {
 
-    object NoUser : UserListItem()
     data class Photo(val uri: Uri) : UserListItem()
     data class NoPhoto(val firstLetter: Char) : UserListItem()
     data class Identity(val firstName: String, val lastName : String?) : UserListItem()

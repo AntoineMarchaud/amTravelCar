@@ -1,5 +1,7 @@
 package com.amarchaud.travelcar.ui.account.main.adapter
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -8,15 +10,12 @@ import androidx.viewbinding.ViewBinding
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.*
 import com.amarchaud.travelcar.ui.account.main.model.UserListItem
-import com.amarchaud.travelcar.utils.toLongDate
-import android.content.Intent
-import android.net.Uri
+import com.amarchaud.travelcar.utils.extensions.toLongDate
 
 
 class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListItem.DIFF_CALLBACK) {
 
     private enum class Type {
-        NO_USER,
         PHOTO,
         NO_PHOTO,
         NAME,
@@ -26,7 +25,6 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is UserListItem.NoUser -> Type.NO_USER.ordinal
             is UserListItem.Photo -> Type.PHOTO.ordinal
             is UserListItem.NoPhoto -> Type.NO_PHOTO.ordinal
             is UserListItem.Identity -> Type.NAME.ordinal
@@ -41,7 +39,6 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
     ): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            Type.NO_USER.ordinal -> ViewHolder.NoUser(ItemAccountNoUserBinding.inflate(layoutInflater, parent, false))
             Type.PHOTO.ordinal -> ViewHolder.Photo(ItemAccountPhotoBinding.inflate(layoutInflater, parent, false))
             Type.NO_PHOTO.ordinal -> ViewHolder.NoPhoto(ItemAccountNoPhotoBinding.inflate(layoutInflater, parent, false))
             Type.NAME.ordinal -> ViewHolder.Name(ItemAccountNameBinding.inflate(layoutInflater, parent, false))
@@ -55,8 +52,6 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         val item = getItem(position)
         item?.let {
             when (holder) {
-                is ViewHolder.NoUser -> {
-                }
                 is ViewHolder.Photo -> holder.bind(it as UserListItem.Photo)
                 is ViewHolder.NoPhoto -> holder.bind(it as UserListItem.NoPhoto)
                 is ViewHolder.Name -> holder.bind(it as UserListItem.Identity)
@@ -67,8 +62,6 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
     }
 
     sealed class ViewHolder(viewBinding: ViewBinding) : RecyclerView.ViewHolder(viewBinding.root) {
-
-        class NoUser(binding: ItemAccountNoUserBinding) : ViewHolder(binding)
 
         class Photo(private val binding: ItemAccountPhotoBinding) : ViewHolder(binding) {
             fun bind(item: UserListItem.Photo) = with(binding) {

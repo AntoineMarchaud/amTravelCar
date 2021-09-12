@@ -1,14 +1,14 @@
 package com.amarchaud.travelcar.ui.car.detail_car
 
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.SharedElementCallback
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.ActivityDetailCarBinding
 import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.utils.toReadableString
+import com.amarchaud.travelcar.utils.extensions.toReadableString
 
 class DetailCarActivity : AppCompatActivity() {
 

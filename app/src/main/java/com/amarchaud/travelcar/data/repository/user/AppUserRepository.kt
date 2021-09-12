@@ -4,7 +4,6 @@ import com.amarchaud.travelcar.data.db.UserDao
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.utils.translator.UserTranslator.toAppUser
 import com.amarchaud.travelcar.utils.translator.UserTranslator.toEntityUser
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

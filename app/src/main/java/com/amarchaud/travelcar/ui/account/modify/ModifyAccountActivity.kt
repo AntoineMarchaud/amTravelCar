@@ -19,21 +19,24 @@ import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.FragmentModifyAccountBinding
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.ui.account.modify.photo_dialog.ChoicePhotoDialog
+import com.amarchaud.travelcar.utils.extensions.toMilliseconds
+import com.amarchaud.travelcar.utils.extensions.toShortDate
 import com.amarchaud.travelcar.utils.textChanges
-import com.amarchaud.travelcar.utils.toShortDate
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.io.File
 import java.util.*
@@ -152,7 +155,22 @@ class ModifyAccountActivity : AppCompatActivity() {
     }
 
     private fun manageBirthdayDialog() {
+
         val builder = MaterialDatePicker.Builder.datePicker()
+        builder.setTheme(R.style.MaterialDatePicker_Theme)
+        val calendarConstraints = CalendarConstraints.Builder()
+
+        viewModel.appUser?.birthday?.let {
+            calendarConstraints.apply {
+                this.setOpenAt(it.toMilliseconds())
+            }
+        }
+        calendarConstraints.apply {
+            val now = LocalDate.now()
+            val local = LocalDateTime.of(now.year, now.month, 1, 0, 0)
+            this.setEnd(local.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+        }
+        builder.setCalendarConstraints(calendarConstraints.build())
         val picker = builder.build()
         picker.show(supportFragmentManager, "datePicker")
         picker.addOnPositiveButtonClickListener {

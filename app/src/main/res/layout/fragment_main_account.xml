@@ -9,12 +9,25 @@
         android:id="@+id/rvAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_medium"
         android:orientation="vertical"
+        android:paddingTop="@dimen/margin_bigger"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="3"
         tools:listitem="@layout/item_account_address" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/noAccountText"
+        style="@style/H1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/account_empty_new_user_title"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

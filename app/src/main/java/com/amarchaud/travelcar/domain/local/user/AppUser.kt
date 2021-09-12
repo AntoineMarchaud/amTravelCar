@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
 
 @Parcelize
 data class AppUser(

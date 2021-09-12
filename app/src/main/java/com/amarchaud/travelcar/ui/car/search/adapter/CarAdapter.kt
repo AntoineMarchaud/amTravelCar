@@ -2,6 +2,7 @@ package com.amarchaud.travelcar.ui.car.search.adapter
 
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
@@ -12,12 +13,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.amarchaud.travelcar.R
+import com.amarchaud.travelcar.databinding.ItemSearchCarBinding
+import com.amarchaud.travelcar.databinding.ItemSearchErrorBinding
+import com.amarchaud.travelcar.databinding.ItemSearchLoaderBinding
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.ui.car.search.model.CarListItem
-import com.amarchaud.travelcar.utils.toReadableString
-import android.graphics.drawable.BitmapDrawable
-import com.amarchaud.travelcar.R
-import com.amarchaud.travelcar.databinding.*
+import com.amarchaud.travelcar.utils.extensions.toReadableString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 

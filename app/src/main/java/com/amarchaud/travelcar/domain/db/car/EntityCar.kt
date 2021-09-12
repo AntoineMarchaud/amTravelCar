@@ -3,7 +3,6 @@ package com.amarchaud.travelcar.domain.db.car
 import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable

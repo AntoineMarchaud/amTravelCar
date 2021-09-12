@@ -44,6 +44,11 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
+    <style name="MaterialDatePicker.Theme" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/light_blue_400</item>
+        <item name="colorOnPrimary">@color/grey_5</item>
+    </style>
+
     <!-- no error, no information, no focus mode, no hint -->
     <style name="TextFieldSimpleTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
 

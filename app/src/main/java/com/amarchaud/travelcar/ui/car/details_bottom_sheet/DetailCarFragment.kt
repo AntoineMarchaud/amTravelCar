@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.BottomSheetCarBinding
 import com.amarchaud.travelcar.domain.local.car.AppCar
+import com.amarchaud.travelcar.utils.extensions.toReadableString
 import com.amarchaud.travelcar.utils.setBottomPadding
 import com.amarchaud.travelcar.utils.setTopBottomInsets
-import com.amarchaud.travelcar.utils.toReadableString
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

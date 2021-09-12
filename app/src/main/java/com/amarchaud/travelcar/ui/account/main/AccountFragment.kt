@@ -66,7 +66,17 @@ class AccountFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.userInfo.collect {
-                    adapter.submitList(it)
+                    it?.let {
+                        with(binding) {
+                            if (it.isEmpty()) {
+                                noAccountText.isVisible = true
+                                adapter.submitList(null)
+                            } else {
+                                noAccountText.isVisible = false
+                                adapter.submitList(it)
+                            }
+                        }
+                    }
                 }
             }
         }

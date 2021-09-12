@@ -8,8 +8,8 @@ import com.amarchaud.travelcar.domain.db.car.EntityCarOptionCrossRef
 import com.amarchaud.travelcar.domain.db.car.EntityOption
 import com.amarchaud.travelcar.domain.db.user.EntityUser
 import com.amarchaud.travelcar.utils.UriAdapter
-import com.amarchaud.travelcar.utils.data_adapter.LocalDateAdapter
 import com.amarchaud.travelcar.utils.data_adapter.ListStringAdapter
+import com.amarchaud.travelcar.utils.data_adapter.LocalDateAdapter
 
 
 @Database(
