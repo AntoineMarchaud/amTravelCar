@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.FragmentMainAccountBinding
 import com.amarchaud.travelcar.domain.local.user.AppUser
+import com.amarchaud.travelcar.ui.account.main.adapter.UserAdapter
 import com.amarchaud.travelcar.ui.account.modify.ModifyAccountActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -28,6 +29,8 @@ class AccountFragment : Fragment() {
     private var _binding: FragmentMainAccountBinding? = null
     private val binding get() = _binding!!
     private val viewModel: AccountFragmentViewModel by viewModels()
+
+    private val adapter = UserAdapter()
 
     companion object {
         const val TAG = "AccountFragment"
@@ -54,38 +57,20 @@ class AccountFragment : Fragment() {
                     putExtra(ModifyAccountActivity.ARG_USER_IN, viewModel.user.value)
                 })
             }
+
+            rvAccount.adapter = adapter
         }
 
+
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.user.collect {
-                    handleUser(it)
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.userInfo.collect {
+                    adapter.submitList(it)
                 }
             }
         }
     }
 
-    private fun handleUser(it: AppUser?) {
-        with(binding) {
-            if (it == null) { // no user yet
-                noAccountText.isVisible = true
-                userGroup.isVisible = false
-
-                userPhoto.setImageURI(null)
-                userCompleteName.text = null
-                userAddress.text = null
-
-            } else {
-                noAccountText.isVisible = false
-                userGroup.isVisible = true
-
-                userPhoto.setImageURI(it.photoUri)
-                userCompleteName.text = getString(R.string.double_string_with_space, it.firstName, it.lastName)
-                userAddress.text = it.address
-                userBirthday.text = it.birthday?.toString()
-            }
-        }
-    }
 
     private val goToModify =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

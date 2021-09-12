@@ -154,4 +154,5 @@ fun SearchView.textChanges(): Flow<CharSequence?> {
 
 
 fun List<String>.toReadableString() = this.toString().removePrefix("[").removeSuffix("]")
-fun LocalDate.toStrDate(): String = this.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(Locale.getDefault()))
+fun LocalDate.toShortDate(): String = this.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(Locale.getDefault()))
+fun LocalDate.toLongDate(): String = this.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.getDefault()))

@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         outState.putInt(SAVED_TAB, binding.navigation.selectedItemId)
+        super.onSaveInstanceState(outState)
     }
 
 
@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-
             if (savedInstanceState != null) {
                 navigation.selectedItemId = savedInstanceState.getInt(SAVED_TAB)
             } else {
@@ -70,5 +69,4 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         finish()
     }
-
 }

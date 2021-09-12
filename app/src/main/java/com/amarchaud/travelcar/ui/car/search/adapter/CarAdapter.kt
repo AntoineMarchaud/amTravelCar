@@ -12,14 +12,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.amarchaud.travelcar.databinding.ItemCarBinding
-import com.amarchaud.travelcar.databinding.ItemErrorBinding
-import com.amarchaud.travelcar.databinding.ItemLoaderBinding
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.ui.car.search.model.CarListItem
 import com.amarchaud.travelcar.utils.toReadableString
 import android.graphics.drawable.BitmapDrawable
 import com.amarchaud.travelcar.R
+import com.amarchaud.travelcar.databinding.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
@@ -34,52 +32,36 @@ interface CarListener {
 }
 
 class CarAdapter(private val listener: CarListener?) :
-    ListAdapter<CarListItem, CarAdapter.CarViewHolder>(CarListItem.DIFF_CALLBACK) {
+    ListAdapter<CarListItem, CarAdapter.ViewHolder>(CarListItem.DIFF_CALLBACK) {
 
-    enum class Type(val v: Int) {
-        LOADING(0),
-        ITEM(1),
-        ERROR(2)
+    private enum class Type {
+        LOADING,
+        ITEM,
+        ERROR
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CarListItem.Loading -> Type.LOADING.v
-            is CarListItem.Car -> Type.ITEM.v
-            is CarListItem.Error -> Type.ERROR.v
+            is CarListItem.Loading -> Type.LOADING.ordinal
+            is CarListItem.Car -> Type.ITEM.ordinal
+            is CarListItem.Error -> Type.ERROR.ordinal
         }
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CarViewHolder {
+    ): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            Type.LOADING.v -> {
-                CarViewHolder.Loading(
-                    ItemLoaderBinding.inflate(layoutInflater, parent, false)
-                )
-            }
-            Type.ITEM.v -> {
-                CarViewHolder.Car(
-                    ItemCarBinding.inflate(layoutInflater, parent, false)
-                )
-            }
-            Type.ERROR.v -> {
-                CarViewHolder.Error(
-                    ItemErrorBinding.inflate(layoutInflater, parent, false)
-                )
-            }
+            Type.LOADING.ordinal -> ViewHolder.Loading(ItemSearchLoaderBinding.inflate(layoutInflater, parent, false))
+            Type.ITEM.ordinal -> ViewHolder.Car(ItemSearchCarBinding.inflate(layoutInflater, parent, false))
+            Type.ERROR.ordinal -> ViewHolder.Error(ItemSearchErrorBinding.inflate(layoutInflater, parent, false))
             else -> throw Exception("unknown viewType : $viewType")
         }
     }
 
-    override fun onBindViewHolder(
-        holder: CarViewHolder,
-        position: Int,
-        payload: List<Any>
-    ) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payload: List<Any>) {
         val item = getItem(position)
         if (payload.isEmpty() || payload[0] !is Boolean) {
             item?.let { bind(holder, item) }
@@ -88,30 +70,23 @@ class CarAdapter(private val listener: CarListener?) :
         }
     }
 
-    override fun onBindViewHolder(holder: CarViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         onBindViewHolder(holder, position, emptyList())
     }
 
-    private fun bind(holder: CarViewHolder, item: CarListItem) {
+    private fun bind(holder: ViewHolder, item: CarListItem) {
         when (holder) {
-            is CarViewHolder.Loading -> {
+            is ViewHolder.Loading -> {
                 //nothing
             }
-            is CarViewHolder.Error -> {
-                val error = (item as CarListItem.Error).error
-                holder.bind(error)
-            }
-            is CarViewHolder.Car -> {
-                (item as? CarListItem.Car)?.let {
-                    holder.bind(it, listener)
-                }
-            }
+            is ViewHolder.Error -> holder.bind(item as CarListItem.Error)
+            is ViewHolder.Car -> holder.bind(item as CarListItem.Car, listener)
         }
     }
 
-    private fun update(holder: CarViewHolder, item: CarListItem, position: Int) {
+    private fun update(holder: ViewHolder, item: CarListItem, position: Int) {
         when (holder) {
-            is CarViewHolder.Car -> {
+            is ViewHolder.Car -> {
                 (item as? CarListItem.Car)?.let {
                     holder.update(it)
                 }
@@ -124,17 +99,16 @@ class CarAdapter(private val listener: CarListener?) :
     }
 
 
-    sealed class CarViewHolder(viewBinding: ViewBinding) :
-        RecyclerView.ViewHolder(viewBinding.root) {
+    sealed class ViewHolder(viewBinding: ViewBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
-        class Loading(binding: ItemLoaderBinding) : CarViewHolder(binding)
+        class Loading(binding: ItemSearchLoaderBinding) : ViewHolder(binding)
 
-        class Car(private val binding: ItemCarBinding) : CarViewHolder(binding) {
+        class Car(private val binding: ItemSearchCarBinding) : ViewHolder(binding) {
 
             /**
              * Hightlight all occurence of a string, no matter uppercase
              */
-            private fun TextView.hightLightText(text: String, filter: String?) {
+            private fun TextView.highLightText(text: String, filter: String?) {
                 filter?.let {
                     if (text.contains(filter, true)) {
 
@@ -169,13 +143,13 @@ class CarAdapter(private val listener: CarListener?) :
                 makeAndModel.append(" ")
                 makeAndModel.append(item.appCar.model)
 
-                this.makeAndModel.hightLightText(makeAndModel.toString(), item.filter)
-                this.year.hightLightText(item.appCar.year.toString(), item.filter)
+                this.makeAndModel.highLightText(makeAndModel.toString(), item.filter)
+                this.year.highLightText(item.appCar.year.toString(), item.filter)
 
                 if (item.appCar.equipments == null) {
                     this.options.text = binding.root.context.getString(R.string.search_no_options)
                 } else {
-                    this.options.hightLightText(
+                    this.options.highLightText(
                         item.appCar.equipments.toReadableString(),
                         item.filter
                     )
@@ -248,9 +222,9 @@ class CarAdapter(private val listener: CarListener?) :
         }
 
 
-        class Error(private val binding: ItemErrorBinding) : CarViewHolder(binding) {
-            fun bind(error: String) = with(binding) {
-                this.error.text = error
+        class Error(private val binding: ItemSearchErrorBinding) : ViewHolder(binding) {
+            fun bind(item: CarListItem.Error) = with(binding) {
+                this.error.text = item.error
             }
         }
     }

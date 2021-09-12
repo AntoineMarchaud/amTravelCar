@@ -20,7 +20,7 @@ import com.amarchaud.travelcar.databinding.FragmentModifyAccountBinding
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.ui.account.modify.photo_dialog.ChoicePhotoDialog
 import com.amarchaud.travelcar.utils.textChanges
-import com.amarchaud.travelcar.utils.toStrDate
+import com.amarchaud.travelcar.utils.toShortDate
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -30,6 +30,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import org.threeten.bp.Instant
@@ -146,7 +147,7 @@ class ModifyAccountActivity : AppCompatActivity() {
             it?.let {
                 val birthdayDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
                 viewModel.appUser?.birthday = birthdayDate // save
-                binding.birthdayEditText.setText(birthdayDate.toStrDate())
+                binding.birthdayEditText.setText(birthdayDate.toShortDate())
             }
         }
     }
@@ -158,7 +159,7 @@ class ModifyAccountActivity : AppCompatActivity() {
                 this.lastNameEditText.setText(user.lastName)
                 this.chooseImage.setImageURI(user.photoUri)
                 this.addressEditText.setText(user.address)
-                this.birthdayEditText.setText(user.birthday?.toStrDate())
+                this.birthdayEditText.setText(user.birthday?.toShortDate())
             }
         }
     }
@@ -169,7 +170,8 @@ class ModifyAccountActivity : AppCompatActivity() {
         /**
          * Management saveButton isEnable status
          */
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
+
             with(binding) {
                 saveButton.isEnabled = false
                 combine(
@@ -180,11 +182,25 @@ class ModifyAccountActivity : AppCompatActivity() {
                 ) { firstName, lastName, address, birthday ->
 
                     // save datas
-                    viewModel.appUser?.firstName = firstName?.toString()
-                    viewModel.appUser?.lastName = lastName?.toString()
-                    viewModel.appUser?.address = address?.toString()
+                    if (!firstName.isNullOrEmpty()) {
+                        viewModel.appUser?.firstName = firstName.toString()
+                    } else {
+                        viewModel.appUser?.firstName = null
+                    }
 
-                    !firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && !address.isNullOrEmpty() && !birthday.isNullOrEmpty()
+                    if (!lastName.isNullOrEmpty()) {
+                        viewModel.appUser?.lastName = lastName.toString()
+                    } else {
+                        viewModel.appUser?.lastName = null
+                    }
+
+                    if (!address.isNullOrEmpty()) {
+                        viewModel.appUser?.address = address.toString()
+                    } else {
+                        viewModel.appUser?.address = null
+                    }
+
+                    !firstName.isNullOrEmpty()
 
                 }.collectLatest { isEnable ->
                     saveButton.isEnabled = isEnable
@@ -243,14 +259,18 @@ class ModifyAccountActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (userToModify == null) {
-            displayQuitAlertDialog()
-        } else if (userToModify != viewModel.appUser) {
-            displayQuitAlertDialog()
-        } else {
-            super.onBackPressed()
-            setResult(RESULT_CANCELED)
-            finish()
+        when {
+            userToModify == null && viewModel.somethingChanged() -> { // no account yet
+                displayQuitAlertDialog()
+            }
+            userToModify != null && (userToModify != viewModel.appUser) -> {
+                displayQuitAlertDialog()
+            }
+            else -> {
+                super.onBackPressed()
+                setResult(RESULT_CANCELED)
+                finish()
+            }
         }
     }
 

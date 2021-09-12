@@ -22,7 +22,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/firstName"
-        style="@style/TextFieldTheme"
+        style="@style/TextFieldSimpleTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_bigger"
@@ -33,6 +33,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/firstNameEditText"
+            style="@style/TextFieldInputTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -44,7 +45,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lastName"
-        style="@style/TextFieldTheme"
+        style="@style/TextFieldSimpleTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_bigger"
@@ -55,6 +56,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/lastNameEditText"
+            style="@style/TextFieldInputTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -76,8 +78,8 @@
         app:endIconMode="clear_text">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:textAppearance="?android:attr/textAppearanceListItem"
             android:id="@+id/addressEditText"
+            style="@style/TextFieldInputTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="none"
@@ -87,7 +89,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/birthday"
-        style="@style/TextFieldTheme"
+        style="@style/TextFieldSimpleTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_bigger"

@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/margin_big"
         android:layout_marginTop="@dimen/margin_medium"
         android:text="@string/account_empty_new_user_title"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

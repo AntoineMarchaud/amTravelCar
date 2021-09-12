@@ -61,7 +61,7 @@ class DetailCarFragment : BottomSheetDialogFragment() {
                     ).into(picture)
 
                 this.year.text = it.year.toString()
-                this.title.text = it.make + " " + it.model
+                this.title.text = getString(R.string.double_string_with_space, it.make, it.model)
                 this.options.text =
                     it.equipments?.toReadableString() ?: binding.root.context.getString(R.string.search_no_options)
 

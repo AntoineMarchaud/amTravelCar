@@ -26,6 +26,11 @@
     <string name="account_empty_new_user_title">Pas de compte !</string>
     <string name="account_empty_new_user_description">Créer un compte</string>
 
+    <!-- normal -->
+    <string name="account_section_name_title">Identité</string>
+    <string name="account_section_address">Adresse</string>
+    <string name="account_section_birthday">Date de naissance</string>
+
     <!-- modify -->
     <string name="account_modify_change_photo_title">Changer de photo</string>
     <string name="account_modify_change_photo_take_photo">Prendre une photo</string>
@@ -34,7 +39,7 @@
 
     <string name="account_modify_hint_first_name">Prénom</string>
     <string name="account_modify_hint_last_name">Nom de famille</string>
-    <string name="account_modify_hint_address">Addresse</string>
+    <string name="account_modify_hint_address">Adresse</string>
     <string name="account_modify_hint_birthday">Date d\'anniversaire</string>
 
     <string name="account_modify_save">Enregistrer</string>

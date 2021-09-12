@@ -24,7 +24,6 @@ class SearchFragmentViewModel @Inject constructor(
     val cars = _cars.asStateFlow()
 
     private var _initialCarList: List<AppCar> = emptyList()
-
     private var jobSearch: Job? = null
 
     init {

@@ -22,5 +22,9 @@ class ModifyAccountFragmentViewModel @Inject constructor(
     //Save state of screen
     var appUser: AppUser? = null
 
-
+    fun somethingChanged() = appUser?.photoUri != null
+            || !appUser?.firstName.isNullOrEmpty()
+            || !appUser?.lastName.isNullOrEmpty()
+            || !appUser?.address.isNullOrEmpty()
+            || appUser?.birthday != null
 }

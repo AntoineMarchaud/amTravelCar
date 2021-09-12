@@ -10,7 +10,6 @@
         android:id="@+id/searchLayout"
         style="@style/TextFieldSimpleTheme"
         android:layout_width="match_parent"
-        android:focusable="false"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_big"
         android:layout_marginTop="@dimen/margin_big"
@@ -42,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchLayout"
         tools:itemCount="3"
-        tools:listitem="@layout/item_car" />
+        tools:listitem="@layout/item_search_car" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

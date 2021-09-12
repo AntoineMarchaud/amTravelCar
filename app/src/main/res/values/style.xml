@@ -1,4 +1,30 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+
+    <!-- Fonts -->
+    <style name="H1">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:textSize">42sp</item>
+    </style>
+
+    <style name="H2">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:textSize">36sp</item>
+    </style>
+
+    <style name="H3">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="H4">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="H5">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 
     <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
         <item name="cornerSize">50%</item>
@@ -32,6 +58,7 @@
         <!-- Label -->
         <item name="android:textColorHint">@color/dark_1</item>
         <item name="hintTextColor">@color/dark_1</item>
+        <item name="hintTextAppearance">@style/H5</item>
 
         <!-- bottom line -->
         <item name="boxStrokeColor">@android:color/transparent</item>
@@ -43,36 +70,6 @@
 
     </style>
 
-    <!-- TextField -->
-    <style name="TextFieldInputTheme">
-        <item name="android:textColor">@color/dark_1</item>
-    </style>
-
-    <style name="TextFieldTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
-
-        <!-- global background  -->
-        <item name="boxBackgroundColor">@android:color/transparent</item>
-
-        <!-- left icon -->
-        <item name="startIconTint">@color/dark_1</item>
-
-        <!-- Label -->
-        <item name="android:textColorHint">@color/dark_1</item>
-        <item name="hintTextColor">@color/dark_1</item>
-
-        <!-- bottom line -->
-        <item name="boxStrokeColor">@android:color/transparent</item>
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
-
-        <!-- Trailing icon (right icon) -->
-        <item name="endIconTint">@color/dark_1</item>
-
-        <!-- error / helper text -->
-        <item name="errorTextColor">@android:color/holo_red_dark</item>
-        <item name="helperTextTextColor">@color/grey_5</item>
-
-    </style>
 
     <!-- TextField -->
     <style name="TextFieldDropTheme" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
@@ -94,5 +91,13 @@
         <item name="endIconMode">dropdown_menu</item>
 
     </style>
+
+    <!-- TextInputEditText -->
+    <style name="TextFieldInputTheme">
+        <!-- Input Text -->
+        <item name="android:textColor">@color/dark_1</item>
+        <item name="android:textAppearance">@style/H4</item>
+    </style>
+
 
 </resources>

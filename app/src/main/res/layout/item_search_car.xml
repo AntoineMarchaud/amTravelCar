@@ -19,7 +19,7 @@
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
         app:strokeColor="@color/light_blue_400"
         app:strokeWidth="3dp"
-        tools:srcCompat="@drawable/ic_launcher_background" />
+        tools:srcCompat="@drawable/placeholder" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="0dp"
@@ -32,33 +32,35 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/makeAndModel"
+            style="@style/H4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/dark_1"
             tools:text="Renault Twingo" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/year"
+            style="@style/H5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/dark_1"
             tools:text="2006" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/options"
+            style="@style/H5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/dark_1"
             tools:text="de superbes options" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-    <View
+    <include
+        layout="@layout/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="16dp"
-        android:background="@color/dark_1"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 
