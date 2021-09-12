@@ -20,16 +20,7 @@ class ModifyAccountFragmentViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
 
     //Save state of screen
-    var imageUri: Uri? = null
+    var appUser: AppUser? = null
 
-    private val _user = MutableStateFlow<AppUser?>(null)
-    val user = _user.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            appUserRepository.getUserFlow().collect {
-                _user.value = it
-            }
-        }
-    }
 }

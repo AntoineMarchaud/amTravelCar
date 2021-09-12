@@ -173,7 +173,7 @@ class CarAdapter(private val listener: CarListener?) :
                 this.year.hightLightText(item.appCar.year.toString(), item.filter)
 
                 if (item.appCar.equipments == null) {
-                    this.options.text = binding.root.context.getString(R.string.no_options)
+                    this.options.text = binding.root.context.getString(R.string.search_no_options)
                 } else {
                     this.options.hightLightText(
                         item.appCar.equipments.toReadableString(),
@@ -194,7 +194,7 @@ class CarAdapter(private val listener: CarListener?) :
                         androidx.core.util.Pair(
                             picture,
                             binding.root.context.getString(
-                                R.string.transition_name_picture,
+                                R.string.search_transition_name_picture,
                                 layoutPosition
                             )
                         )
@@ -202,7 +202,7 @@ class CarAdapter(private val listener: CarListener?) :
                         androidx.core.util.Pair(
                             makeAndModel,
                             binding.root.context.getString(
-                                R.string.transition_make_and_model,
+                                R.string.search_transition_make_and_model,
                                 layoutPosition
                             )
                         )
@@ -210,7 +210,7 @@ class CarAdapter(private val listener: CarListener?) :
                         androidx.core.util.Pair(
                             year,
                             binding.root.context.getString(
-                                R.string.transition_year,
+                                R.string.search_transition_year,
                                 layoutPosition
                             )
                         )
@@ -218,7 +218,7 @@ class CarAdapter(private val listener: CarListener?) :
                         androidx.core.util.Pair(
                             options,
                             binding.root.context.getString(
-                                R.string.transition_options,
+                                R.string.search_transition_options,
                                 layoutPosition
                             )
                         )

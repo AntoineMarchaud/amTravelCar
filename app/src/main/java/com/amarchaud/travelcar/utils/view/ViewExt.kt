@@ -8,15 +8,25 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.widget.EditText
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.onStart
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
+import java.util.*
 
 
 fun View.setTopBottomInsets(addInsets: (topInsets: Int, bottomInsets: Int) -> Unit) {
@@ -107,7 +117,7 @@ fun View.setMargins(l: Int, t: Int, r: Int, b: Int) {
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun AppCompatEditText.textChanges(): Flow<CharSequence?> {
+fun EditText.textChanges(): Flow<CharSequence?> {
     return callbackFlow {
         val listener = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) = Unit
@@ -142,4 +152,6 @@ fun SearchView.textChanges(): Flow<CharSequence?> {
     }
 }
 
+
 fun List<String>.toReadableString() = this.toString().removePrefix("[").removeSuffix("]")
+fun LocalDate.toStrDate(): String = this.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale(Locale.getDefault()))

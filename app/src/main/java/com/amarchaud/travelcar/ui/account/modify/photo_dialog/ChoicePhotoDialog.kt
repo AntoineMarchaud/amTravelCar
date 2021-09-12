@@ -18,21 +18,15 @@ class ChoicePhotoDialog : DialogFragment() {
             TAKE_PHOTO,
             SELECT_PHOTO
         }
-
-        const val TAKE_PHOTO = 0
-        const val SELECT_PHOTO = 1
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             builder
-                .setTitle(R.string.change_photo_title)
+                .setTitle(R.string.account_modify_change_photo_title)
                 .setItems(
-                    arrayOf(
-                        getString(R.string.change_photo_take_photo),
-                        getString(R.string.change_photo_select_photo)
-                    )
+                    arrayOf(getString(R.string.account_modify_change_photo_take_photo), getString(R.string.account_modify_change_photo_select_photo))
                 ) { _, which ->
                     when (which) {
                         0 -> setFragmentResult(ARG_OUTPUT, Bundle().apply {
@@ -49,7 +43,6 @@ class ChoicePhotoDialog : DialogFragment() {
                     })
                     dismiss()
                 }
-            // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

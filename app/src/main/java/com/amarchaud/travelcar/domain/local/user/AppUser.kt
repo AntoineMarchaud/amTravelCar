@@ -8,9 +8,9 @@ import org.threeten.bp.LocalTime
 
 @Parcelize
 data class AppUser(
-    val photoUri: Uri?,
-    val firstName: String?,
-    val lastName: String?,
-    val address: String?,
-    val birthday: LocalDate?
+    var photoUri: Uri? = null,
+    var firstName: String? = null,
+    var lastName: String? = null,
+    var address: String? = null,
+    var birthday: LocalDate? = null
 ) : Parcelable

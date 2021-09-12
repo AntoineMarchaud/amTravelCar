@@ -39,7 +39,7 @@ class SearchFragmentViewModel @Inject constructor(
                 }.collect {
                     if (it == null) {
                         _cars.value =
-                            listOf(CarListItem.Error(app.getString(R.string.no_car_error)))
+                            listOf(CarListItem.Error(app.getString(R.string.search_no_car_error)))
                     } else {
                         _initialCarList = it
                         _cars.value = it.map { CarListItem.Car(it) }

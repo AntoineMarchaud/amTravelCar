@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.FragmentMainAccountBinding
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import com.amarchaud.travelcar.ui.account.modify.ModifyAccountActivity
@@ -49,7 +50,9 @@ class AccountFragment : Fragment() {
 
         with(binding) {
             modifyAccoutFab.setOnClickListener {
-                goToModify.launch(Intent(requireContext(), ModifyAccountActivity::class.java))
+                goToModify.launch(Intent(requireContext(), ModifyAccountActivity::class.java).apply {
+                    putExtra(ModifyAccountActivity.ARG_USER_IN, viewModel.user.value)
+                })
             }
         }
 
@@ -77,7 +80,7 @@ class AccountFragment : Fragment() {
                 userGroup.isVisible = true
 
                 userPhoto.setImageURI(it.photoUri)
-                userCompleteName.text = it.firstName + " " + it.lastName
+                userCompleteName.text = getString(R.string.double_string_with_space, it.firstName, it.lastName)
                 userAddress.text = it.address
                 userBirthday.text = it.birthday?.toString()
             }
@@ -87,8 +90,11 @@ class AccountFragment : Fragment() {
     private val goToModify =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                // nothing to do, flow will update...
+                val appUser =
+                    result.data?.getParcelableExtra<AppUser?>(ModifyAccountActivity.ARG_USER_SAVED)
+                appUser?.let {
+                    viewModel.updateUser(appUser)
+                }
             }
         }
-
-    }
+}
