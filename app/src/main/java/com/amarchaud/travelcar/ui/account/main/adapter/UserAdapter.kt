@@ -9,6 +9,9 @@ import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.*
 import com.amarchaud.travelcar.ui.account.main.model.UserListItem
 import com.amarchaud.travelcar.utils.toLongDate
+import android.content.Intent
+import android.net.Uri
+
 
 class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListItem.DIFF_CALLBACK) {
 
@@ -92,6 +95,11 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         class Address(private val binding: ItemAccountAddressBinding) : ViewHolder(binding) {
             fun bind(item: UserListItem.Address) = with(binding) {
                 address.text = item.address
+                goToMap.setOnClickListener {
+                    val map = "https://maps.google.co.in/maps?q=${item.address}"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(map))
+                    binding.root.context.startActivity(intent)
+                }
             }
         }
 
