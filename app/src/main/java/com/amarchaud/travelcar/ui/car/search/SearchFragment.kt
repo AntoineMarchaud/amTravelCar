@@ -109,7 +109,11 @@ class SearchFragment : Fragment(), CarListener, SpellCheckerSession.SpellChecker
             with(binding) {
                 searchLayoutEditText.textChanges().collectLatest {
                     if (!it.isNullOrEmpty()) {
-                        _scs?.getSentenceSuggestions(arrayOf(TextInfo(it.toString())), 3)
+                        if(_scs == null) {
+                            viewModel.filterWithSuggestions(it.toString(), null)
+                        } else {
+                            _scs?.getSentenceSuggestions(arrayOf(TextInfo(it.toString())), 3)
+                        }
                     } else {
                         viewModel.filterWithSuggestions(it.toString())
                     }
