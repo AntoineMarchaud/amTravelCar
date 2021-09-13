@@ -15,6 +15,8 @@ The two tabs are using RecyclerView. For the car tab, it is normal, for the acco
 with a RecyclerView, and the UI is updated corresponding to what the user adds/remove in the ModifyAccount screen.
   
 I use Flow to update the account screen, it detects each database update and update UI when needed.
+  
+The user can rotate, kill/restore the app, and be in offline mode, everything keeps displayed (if a least the list of cars is fetched one time)
 
 ## UI
 
