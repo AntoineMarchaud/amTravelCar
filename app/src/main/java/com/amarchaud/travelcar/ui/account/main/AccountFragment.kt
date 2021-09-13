@@ -54,7 +54,7 @@ class AccountFragment : Fragment() {
         with(binding) {
             modifyAccoutFab.setOnClickListener {
                 goToModify.launch(Intent(requireContext(), ModifyAccountActivity::class.java).apply {
-                    putExtra(ModifyAccountActivity.ARG_USER_IN, viewModel.user.value)
+                    putExtra(ModifyAccountActivity.ARG_USER_IN, viewModel.user)
                 })
                 requireActivity().overridePendingTransition(R.anim.enter_from_right, R.anim.exit_nothing)
             }

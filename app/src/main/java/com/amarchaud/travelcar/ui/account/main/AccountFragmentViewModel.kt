@@ -22,13 +22,13 @@ class AccountFragmentViewModel @Inject constructor(
     private val _userListInfo = MutableStateFlow<List<UserListItem>?>(null)
     val userInfo = _userListInfo.asStateFlow()
 
-    private val _user = MutableStateFlow<AppUser?>(null)
-    var user = _user.asStateFlow()
+    var user: AppUser? = null
+        private set
 
     init {
         viewModelScope.launch {
             appUserRepository.getUserFlow().collect {
-                _user.value = it
+                user = it
                 _userListInfo.value = transformUserToListItem(it)
             }
         }
