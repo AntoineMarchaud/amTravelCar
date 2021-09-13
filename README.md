@@ -28,7 +28,7 @@ If the user is typing something, the list is updated :
 
 <img src="https://github.com/AntoineMarchaud/amTravelCar/blob/master/readme/left_search.png" width="400" />
 
-If the user is typing something with an error, the list is updated :
+If the user is typing something with an error, the list is updated (works on a Pixel, not on my Xiaomi, I do not know why) :
 
 <img src="https://github.com/AntoineMarchaud/amTravelCar/blob/master/readme/left_search_error.png" width="400" />
 
