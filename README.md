@@ -32,7 +32,7 @@ If the user is typing something with an error, the list is updated (works on a P
 
 <img src="https://github.com/AntoineMarchaud/amTravelCar/blob/master/readme/left_search_error.png" width="400" />
 
-If the user clicks on a cell, the detail screen is displayed :
+If the user clicks on a cell, the detail screen is displayed with an animation :
 
 <img src="https://github.com/AntoineMarchaud/amTravelCar/blob/master/readme/left_detail.png" width="400" />
 
