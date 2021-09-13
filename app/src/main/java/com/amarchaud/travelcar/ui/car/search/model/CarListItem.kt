@@ -7,6 +7,7 @@ sealed class CarListItem {
 
     object Loading : CarListItem()
     data class Car(val appCar: AppCar, val filter: String? = null) : CarListItem()
+    object Nothing : CarListItem()
     data class Error(val error: String) : CarListItem()
 
     companion object {

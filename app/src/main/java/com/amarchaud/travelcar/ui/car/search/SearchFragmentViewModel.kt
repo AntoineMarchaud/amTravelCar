@@ -4,11 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.amarchaud.travelcar.R
-import com.amarchaud.travelcar.data.repository.car.AppCarRepository
+import com.amarchaud.travelcar.data.repository.car.CarRepository
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.ui.car.search.model.CarListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -20,14 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFragmentViewModel @Inject constructor(
     private val app: Application,
-    private val appRepository: AppCarRepository
+    private val carRepository: CarRepository
 ) : AndroidViewModel(app) {
 
     private val _cars = MutableStateFlow<List<CarListItem>>(emptyList())
     val cars = _cars.asStateFlow()
 
     private var _initialCarList: List<AppCar> = emptyList()
-    private var jobSearch: Job? = null
 
     init {
 
@@ -35,7 +33,7 @@ class SearchFragmentViewModel @Inject constructor(
          * First method : call getCarsFlow which emit(db), and refresh if needed
          */
         viewModelScope.launch {
-            appRepository.getCarsFlow()
+            carRepository.getCarsFlow()
                 .onStart {
                     _cars.value = listOf(CarListItem.Loading)
                 }.collect {
@@ -68,8 +66,7 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     fun filterWithSuggestions(search: String, suggestions: List<String>? = null) {
-        jobSearch?.cancel()
-        jobSearch = viewModelScope.launch {
+        viewModelScope.launch {
             if (search.isEmpty()) {
                 _cars.value = _initialCarList.map { CarListItem.Car(it) }
             } else {
@@ -82,7 +79,11 @@ class SearchFragmentViewModel @Inject constructor(
                         }
                     }
 
-                _cars.value = filterList.map { CarListItem.Car(it, search) }
+                if (filterList.isNullOrEmpty()) {
+                    _cars.value = listOf(CarListItem.Nothing)
+                } else {
+                    _cars.value = filterList.map { CarListItem.Car(it, search) }
+                }
             }
         }
     }

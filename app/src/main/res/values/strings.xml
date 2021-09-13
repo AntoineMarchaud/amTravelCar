@@ -15,6 +15,7 @@
     <string name="search_no_options">Pas d\'options !</string>
     <string name="search_no_car_error">Rien à afficher</string>
     <string name="search_car">Rechercher une voiture</string>
+    <string name="search_nothing">Rien d\'intéressant !</string>
 
     <string name="search_transition_name_picture">transition_picture_%d</string>
     <string name="search_transition_make_and_model">transition_make_and_mode_%d</string>

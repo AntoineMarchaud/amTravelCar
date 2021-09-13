@@ -17,6 +17,7 @@ import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.ItemSearchCarBinding
 import com.amarchaud.travelcar.databinding.ItemSearchErrorBinding
 import com.amarchaud.travelcar.databinding.ItemSearchLoaderBinding
+import com.amarchaud.travelcar.databinding.ItemSearchNothingBinding
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.ui.car.search.model.CarListItem
 import com.amarchaud.travelcar.utils.extensions.toReadableString
@@ -38,6 +39,7 @@ class CarAdapter(private val listener: CarListener?) :
 
     private enum class Type {
         LOADING,
+        NOTHING,
         ITEM,
         ERROR
     }
@@ -45,6 +47,7 @@ class CarAdapter(private val listener: CarListener?) :
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is CarListItem.Loading -> Type.LOADING.ordinal
+            is CarListItem.Nothing -> Type.NOTHING.ordinal
             is CarListItem.Car -> Type.ITEM.ordinal
             is CarListItem.Error -> Type.ERROR.ordinal
         }
@@ -57,6 +60,7 @@ class CarAdapter(private val listener: CarListener?) :
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             Type.LOADING.ordinal -> ViewHolder.Loading(ItemSearchLoaderBinding.inflate(layoutInflater, parent, false))
+            Type.NOTHING.ordinal -> ViewHolder.Nothing(ItemSearchNothingBinding.inflate(layoutInflater, parent, false))
             Type.ITEM.ordinal -> ViewHolder.Car(ItemSearchCarBinding.inflate(layoutInflater, parent, false))
             Type.ERROR.ordinal -> ViewHolder.Error(ItemSearchErrorBinding.inflate(layoutInflater, parent, false))
             else -> throw Exception("unknown viewType : $viewType")
@@ -104,6 +108,8 @@ class CarAdapter(private val listener: CarListener?) :
     sealed class ViewHolder(viewBinding: ViewBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
         class Loading(binding: ItemSearchLoaderBinding) : ViewHolder(binding)
+
+        class Nothing(binding: ItemSearchNothingBinding) : ViewHolder(binding)
 
         class Car(private val binding: ItemSearchCarBinding) : ViewHolder(binding) {
 
