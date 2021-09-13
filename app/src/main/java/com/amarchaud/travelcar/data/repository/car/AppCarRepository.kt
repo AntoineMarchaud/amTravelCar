@@ -3,14 +3,20 @@ package com.amarchaud.travelcar.data.repository.car
 import arrow.core.Either
 import com.amarchaud.travelcar.data.db.CarDao
 import com.amarchaud.travelcar.data.remote.TravelCarApi
+import com.amarchaud.travelcar.di.DispatcherModule
 import com.amarchaud.travelcar.domain.db.car.EntityCarOptionCrossRef
 import com.amarchaud.travelcar.domain.db.car.EntityOption
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.domain.remote.car.ApiCar
 import com.amarchaud.travelcar.utils.translator.CarTranslator.toAppCar
 import com.amarchaud.travelcar.utils.translator.CarTranslator.toEntityCar
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,7 +26,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class AppCarRepository @Inject constructor(
     private val travelCarApi: TravelCarApi,
-    private val travelCarDao: CarDao
+    private val travelCarDao: CarDao,
+    @DispatcherModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : CarRepository {
 
     /**
@@ -32,7 +39,7 @@ class AppCarRepository @Inject constructor(
                 emit(it.map { it.toAppCar() })
             }
         }
-    }
+    }.flowOn(ioDispatcher)
 
     /**
      * first emit DB
@@ -43,74 +50,77 @@ class AppCarRepository @Inject constructor(
         if (update()) {
             emit(getCarsFromDb())
         }
-    }
+    }.flowOn(ioDispatcher)
 
 
     /**
      * call api and refresh db
      */
-    override suspend fun update(): Boolean {
-        // then try to update
-        val res = getCarsFromApi()
-        if (res is Either.Right) {
+    override suspend fun update(): Boolean = withContext(Dispatchers.IO) {
 
-            if (getCarsFromDb().isNullOrEmpty()) { // first time : add all
-                //travelCarDao.addCars(res.value.map { it.toEntityCar() })
+            var isUpdate = false
 
-                res.value.forEach { oneCar ->
-                    travelCarDao.addCar(oneCar.toEntityCar())
-                    oneCar.equipments?.forEach {
+            val res = getCarsFromApi()
+            if (res is Either.Right) {
 
-                        if (travelCarDao.getOption(it) == null) {
-                            travelCarDao.addOption(EntityOption(option = it))
-                        }
+                if (getCarsFromDb().isNullOrEmpty()) { // first time : add all
+                    //travelCarDao.addCars(res.value.map { it.toEntityCar() })
 
-                        val entityCar = travelCarDao.getCarByMarkAndModel(oneCar.make, oneCar.model)
-                        val entityOption = travelCarDao.getOption(it)
+                    res.value.forEach { oneCar ->
+                        travelCarDao.addCar(oneCar.toEntityCar())
+                        oneCar.equipments?.forEach {
 
-                        if (entityCar != null && entityOption != null) {
+                            if (travelCarDao.getOption(it) == null) {
+                                travelCarDao.addOption(EntityOption(option = it))
+                            }
 
-                            travelCarDao.addRelation(
-                                EntityCarOptionCrossRef(
-                                    carId = entityCar.id,
-                                    optionId = entityOption.id
+                            val entityCar = travelCarDao.getCarByMarkAndModel(oneCar.make, oneCar.model)
+                            val entityOption = travelCarDao.getOption(it)
+
+                            if (entityCar != null && entityOption != null) {
+
+                                travelCarDao.addRelation(
+                                    EntityCarOptionCrossRef(
+                                        carId = entityCar.id,
+                                        optionId = entityOption.id
+                                    )
                                 )
-                            )
+                            }
+                        }
+
+                        // add relation
+                    }
+
+                } else {
+                    // try to update / add
+                    res.value.forEach {
+                        // warning : we suppose here make / model can not change
+                        // normally the API need to send a remoteID
+                        val exist = travelCarDao.getCarByMarkAndModel(it.make, it.model)
+                        if (exist == null) {
+                            travelCarDao.addCar(it.toEntityCar())
+                        } else {
+                            travelCarDao.updateCar(exist.apply {
+                                this.year = it.year
+                                this.picture = it.picture
+                                equipments = it.equipments
+                            })
                         }
                     }
-
-                    // add relation
                 }
 
-            } else {
-                // try to update / add
-                res.value.forEach {
-                    // warning : we suppose here make / model can not change
-                    // normally the API need to send a remoteID
-                    val exist = travelCarDao.getCarByMarkAndModel(it.make, it.model)
-                    if (exist == null) {
-                        travelCarDao.addCar(it.toEntityCar())
-                    } else {
-                        travelCarDao.updateCar(exist.apply {
-                            this.year = it.year
-                            this.picture = it.picture
-                            equipments = it.equipments
-                        })
-                    }
-                }
+                isUpdate = true
             }
 
-            return true
-        }
-
-        return false
+        isUpdate
     }
 
     /**
      * Get cars from DB only
      */
-    private suspend fun getCarsFromDb(): List<AppCar>? =
+    private suspend fun getCarsFromDb(): List<AppCar>? = withContext(Dispatchers.IO) {
         travelCarDao.getCarsWithOptions()?.map { it.toAppCar() }
+    }
 
     /**
      * Get cars from api only
