@@ -1,7 +1,7 @@
 package com.amarchaud.travelcar.data.repository.car
 
 import arrow.core.Either
-import com.amarchaud.travelcar.data.db.CarDao
+import com.amarchaud.travelcar.data.db.TravelCarDao
 import com.amarchaud.travelcar.data.remote.TravelCarApi
 import com.amarchaud.travelcar.di.DispatcherModule
 import com.amarchaud.travelcar.domain.db.car.EntityCarOptionCrossRef
@@ -12,7 +12,6 @@ import com.amarchaud.travelcar.utils.translator.CarTranslator.toAppCar
 import com.amarchaud.travelcar.utils.translator.CarTranslator.toEntityCar
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -26,7 +25,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class AppCarRepository @Inject constructor(
     private val travelCarApi: TravelCarApi,
-    private val travelCarDao: CarDao,
+    private val travelCarDao: TravelCarDao,
     @DispatcherModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : CarRepository {
 

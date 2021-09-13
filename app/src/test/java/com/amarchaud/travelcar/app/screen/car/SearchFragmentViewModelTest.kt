@@ -3,13 +3,13 @@ package com.amarchaud.travelcar.app.screen.car
 import android.app.Application
 import android.net.Uri
 import androidx.annotation.CallSuper
-import com.amarchaud.travelcar.app.CoroutineTest
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.amarchaud.travelcar.app.CoroutineTestRule
 import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockCar
 import com.amarchaud.travelcar.data.repository.car.CarRepository
 import com.amarchaud.travelcar.domain.local.car.AppCar
 import com.amarchaud.travelcar.ui.car.search.SearchFragmentViewModel
 import com.amarchaud.travelcar.ui.car.search.model.CarListItem
-import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flow
@@ -18,24 +18,32 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchFragmentViewModelTest : CoroutineTest() {
+class SearchFragmentViewModelTest {
 
-    val carsSimulateUpdateFlow = flow {
+    @get:Rule
+    val rule = CoroutineTestRule()
+
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    private val carsSimulateUpdateFlow = flow {
         emit(
             listOf(mockCar(), mockCar(), mockCar(), mockCar(), mockCar())
         )
-        kotlinx.coroutines.delay(200)
+        kotlinx.coroutines.delay(300)
         emit(
             listOf(mockCar(), mockCar()) // simulate update by the endpoint
         )
     }
 
-    val carsFlow = flow {
+    private val carsFlow = flow {
         emit(
             listOf(
                 AppCar(
@@ -72,13 +80,13 @@ class SearchFragmentViewModelTest : CoroutineTest() {
     @Before
     @CallSuper
     fun setup() {
-        MockitoAnnotations.openMocks(this)
+        MockitoAnnotations.initMocks(this)
     }
 
     @Test
-    fun `Int flow Ok`() = launch {
+    fun `Int flow Ok`() = rule.dispatcher.runBlockingTest {
 
-        whenever(carRepositoryMock.getCarsFlow()).thenReturn(carsSimulateUpdateFlow)
+        Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsSimulateUpdateFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         val result = arrayListOf<List<CarListItem>>()
@@ -94,8 +102,7 @@ class SearchFragmentViewModelTest : CoroutineTest() {
             }
         }
 
-        advanceTimeBy(200) // simulate update
-        Assert.assertTrue(result.size == 2)
+        advanceTimeBy(300)
 
         with(result[1]) {
             Assert.assertTrue(size == 2)
@@ -108,9 +115,9 @@ class SearchFragmentViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `filterNoSuggestion Ok`() = runBlockingTest {
+    fun `filterNoSuggestion Ok`() = rule.dispatcher.runBlockingTest {
 
-        whenever(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
+        Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         viewModel.filterWithSuggestions("Peu")
@@ -157,9 +164,9 @@ class SearchFragmentViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `filterWithSuggestion Ok`() = runBlockingTest {
+    fun `filterWithSuggestion Ok`() = rule.dispatcher.runBlockingTest {
 
-        whenever(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
+        Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         val job: Job?
@@ -183,9 +190,9 @@ class SearchFragmentViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `filterWithSuggestion Ko`() = runBlockingTest {
+    fun `filterWithSuggestion Ko`() = rule.dispatcher.runBlockingTest {
 
-        whenever(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
+        Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         val job: Job?

@@ -24,6 +24,6 @@ import com.amarchaud.travelcar.utils.data_adapter.LocalDateAdapter
     LocalDateAdapter.LocalDateDbConverter::class
 )
 abstract class AppDb : RoomDatabase() {
-    abstract fun getCarDao(): CarDao
+    abstract fun getCarDao(): TravelCarDao
     abstract fun getUserDao() : UserDao
 }

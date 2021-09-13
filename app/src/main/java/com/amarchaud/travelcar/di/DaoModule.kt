@@ -3,7 +3,7 @@ package com.amarchaud.travelcar.di
 import android.content.Context
 import androidx.room.Room
 import com.amarchaud.travelcar.data.db.AppDb
-import com.amarchaud.travelcar.data.db.CarDao
+import com.amarchaud.travelcar.data.db.TravelCarDao
 import com.amarchaud.travelcar.data.db.UserDao
 import dagger.Module
 import dagger.Provides
@@ -25,7 +25,7 @@ class DaoModule {
 
     @Singleton
     @Provides
-    fun provideCarDao(appDb: AppDb): CarDao {
+    fun provideCarDao(appDb: AppDb): TravelCarDao {
         return appDb.getCarDao()
     }
 

@@ -8,7 +8,7 @@ import com.amarchaud.travelcar.domain.db.car.EntityOption
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CarDao {
+interface TravelCarDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addCar(car: EntityCar): Long
