@@ -68,4 +68,4 @@ At last, when the account is saved, this screen is displayed, it is possible to 
 
 <img src="https://github.com/AntoineMarchaud/amTravelCar/blob/master/readme/right_add_account_sum_up.png" width="400" />
 
-It is also possible to add / modify / remove the account.
+It is also possible to modify / remove the account.
