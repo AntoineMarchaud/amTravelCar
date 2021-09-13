@@ -8,8 +8,8 @@
 - Room with adapters
 - Retrofit with Moshi adapters
 
-For the database, I have choosen to use a junction table for the list of options, but it is possible to manage a List<String> of options directly
-on the Entity. (the code exists but it is not used)
+For the database, I have choosen to use a junction table for the list of options, but it is possible to manage a List of String directly
+on the Entity. (the code exists but it is not used.). It works, but it does not manage the case where the same option is in different cars.
 
 The two tabs are using RecyclerView. For the car tab, it is normal, for the account tab, let's imagine you have a lot of differents fields, the XML is so much lighter
 with a RecyclerView, and the UI is updated corresponding to what the user adds/remove in the ModifyAccount screen.
