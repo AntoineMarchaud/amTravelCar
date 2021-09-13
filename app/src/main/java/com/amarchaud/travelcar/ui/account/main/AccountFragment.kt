@@ -86,11 +86,12 @@ class AccountFragment : Fragment() {
     private val goToModify =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
+                /*
                 val appUser =
                     result.data?.getParcelableExtra<AppUser?>(ModifyAccountActivity.ARG_USER_SAVED)
                 appUser?.let {
                     viewModel.updateUser(appUser)
-                }
+                }*/
             }
         }
 }

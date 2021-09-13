@@ -105,9 +105,13 @@ class ModifyAccountActivity : AppCompatActivity() {
             }
 
             saveButton.setOnClickListener {
+
+                viewModel.manageUser()
+                setResult(RESULT_OK)
+                /*
                 setResult(RESULT_OK, Intent().apply {
                     putExtra(ARG_USER_SAVED, viewModel.appUser)
-                })
+                })*/
                 finish()
                 overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
             }
@@ -311,9 +315,12 @@ class ModifyAccountActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setMessage(R.string.account_modify_user_not_saved)
             .setPositiveButton(getString(R.string.account_modify_save)) { dialog, id ->
+
+                viewModel.manageUser()
+                /*
                 setResult(RESULT_OK, Intent().apply {
                     putExtra(ARG_USER_SAVED, viewModel.appUser)
-                })
+                })*/
                 finish()
                 overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
             }

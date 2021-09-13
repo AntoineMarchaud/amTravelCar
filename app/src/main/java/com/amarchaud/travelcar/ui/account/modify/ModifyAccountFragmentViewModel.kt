@@ -2,9 +2,11 @@ package com.amarchaud.travelcar.ui.account.modify
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.amarchaud.travelcar.data.repository.user.AppUserRepository
 import com.amarchaud.travelcar.domain.local.user.AppUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,5 +26,14 @@ class ModifyAccountFragmentViewModel @Inject constructor(
 
     suspend fun eraseAccount() {
         appUserRepository.deleteUser()
+    }
+
+    fun manageUser() {
+        appUser?.let {
+            viewModelScope.launch {
+                appUserRepository.manageUser(it)
+            }
+        }
+
     }
 }
