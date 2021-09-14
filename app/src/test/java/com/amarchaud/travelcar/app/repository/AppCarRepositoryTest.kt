@@ -5,19 +5,29 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amarchaud.travelcar.app.CoroutineTestRule
+import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockApiCar
+import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockCar
 import com.amarchaud.travelcar.data.db.AppDb
 import com.amarchaud.travelcar.data.db.TravelCarDao
 import com.amarchaud.travelcar.data.remote.TravelCarApi
 import com.amarchaud.travelcar.data.repository.car.AppCarRepository
 import com.amarchaud.travelcar.domain.db.car.EntityCar
+import com.amarchaud.travelcar.domain.local.car.AppCar
+import com.amarchaud.travelcar.domain.remote.car.ApiCar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.mock.Calls
 import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -27,25 +37,24 @@ class AppCarRepositoryTest {
     private lateinit var mockRepo: AppCarRepository
     private lateinit var userDao: TravelCarDao
     private lateinit var db: AppDb
-    private val testDispatcher = TestCoroutineDispatcher()
 
+    @ExperimentalCoroutinesApi
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    val testCoroutineRule = CoroutineTestRule()
 
     @Mock
-    lateinit var carApi: TravelCarApi
+    lateinit var carApiMock: TravelCarApi
 
-    @Before
-    fun createDb() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, AppDb::class.java).build()
-        userDao = db.getCarDao()
-    }
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        mockRepo = AppCarRepository(carApi, userDao, testDispatcher)
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(context, AppDb::class.java).allowMainThreadQueries().build()
+        userDao = db.getCarDao()
+
+        mockRepo = AppCarRepository(carApiMock, userDao, testCoroutineRule.dispatcher)
     }
 
 
@@ -58,7 +67,11 @@ class AppCarRepositoryTest {
 
     @Test
     @Throws(Exception::class)
-    fun `getCarsFromDbFlow - ok`() = runBlockingTest {
+    fun `getCarsFromDbFlow - ok`() = runBlocking {
+
+        val response= Response.success((listOf(mockApiCar())))
+        val mockCall = Calls.response(response)
+        Mockito.`when`(carApiMock.getCars()).thenReturn(mockCall)
 
         userDao.addCar(
             EntityCar(
@@ -82,5 +95,6 @@ class AppCarRepositoryTest {
         val listCars = mockRepo.getCarsFlow().first()
         Assert.assertTrue(!listCars.isNullOrEmpty())
         Assert.assertTrue(listCars?.size == 2)
+        Assert.assertTrue(listCars?.get(0)?.make == "Ferrari")
     }
 }

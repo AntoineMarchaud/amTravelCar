@@ -28,10 +28,7 @@ import org.mockito.MockitoAnnotations
 class SearchFragmentViewModelTest {
 
     @get:Rule
-    val rule = CoroutineTestRule()
-
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    val testCoroutineRule = CoroutineTestRule()
 
     private val carsSimulateUpdateFlow = flow {
         emit(
@@ -80,11 +77,11 @@ class SearchFragmentViewModelTest {
     @Before
     @CallSuper
     fun setup() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
     }
 
     @Test
-    fun `Int flow Ok`() = rule.dispatcher.runBlockingTest {
+    fun `Int flow Ok`() = testCoroutineRule.dispatcher.runBlockingTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsSimulateUpdateFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
@@ -115,7 +112,7 @@ class SearchFragmentViewModelTest {
     }
 
     @Test
-    fun `filterNoSuggestion Ok`() = rule.dispatcher.runBlockingTest {
+    fun `filterNoSuggestion Ok`() = testCoroutineRule.dispatcher.runBlockingTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
@@ -164,7 +161,7 @@ class SearchFragmentViewModelTest {
     }
 
     @Test
-    fun `filterWithSuggestion Ok`() = rule.dispatcher.runBlockingTest {
+    fun `filterWithSuggestion Ok`() = testCoroutineRule.dispatcher.runBlockingTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
@@ -190,7 +187,7 @@ class SearchFragmentViewModelTest {
     }
 
     @Test
-    fun `filterWithSuggestion Ko`() = rule.dispatcher.runBlockingTest {
+    fun `filterWithSuggestion Ko`() = testCoroutineRule.dispatcher.runBlockingTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
