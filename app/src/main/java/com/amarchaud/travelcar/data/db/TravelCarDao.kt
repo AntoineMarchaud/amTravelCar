@@ -32,7 +32,7 @@ interface TravelCarDao {
     suspend fun addRelation(relation: EntityCarOptionCrossRef)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addOption(option: EntityOption)
+    suspend fun addOption(option: EntityOption) : Long
 
     @Query("SELECT * from option where option=:option")
     suspend fun getOption(option: String): EntityOption?
