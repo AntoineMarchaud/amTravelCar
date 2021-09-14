@@ -1,4 +1,4 @@
-package com.amarchaud.travelcar.domain.db.user
+package com.amarchaud.travelcar.data.models
 
 import android.net.Uri
 import androidx.room.ColumnInfo

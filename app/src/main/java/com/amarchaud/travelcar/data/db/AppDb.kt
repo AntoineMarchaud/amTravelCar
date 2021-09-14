@@ -3,10 +3,10 @@ package com.amarchaud.travelcar.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.amarchaud.travelcar.domain.db.car.EntityCar
-import com.amarchaud.travelcar.domain.db.car.EntityCarOptionCrossRef
-import com.amarchaud.travelcar.domain.db.car.EntityOption
-import com.amarchaud.travelcar.domain.db.user.EntityUser
+import com.amarchaud.travelcar.data.models.EntityCar
+import com.amarchaud.travelcar.data.models.EntityCarOptionCrossRef
+import com.amarchaud.travelcar.data.models.EntityOption
+import com.amarchaud.travelcar.data.models.EntityUser
 import com.amarchaud.travelcar.utils.UriAdapter
 import com.amarchaud.travelcar.utils.data_adapter.ListStringAdapter
 import com.amarchaud.travelcar.utils.data_adapter.LocalDateAdapter

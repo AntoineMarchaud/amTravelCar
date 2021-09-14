@@ -1,9 +1,9 @@
 package com.amarchaud.travelcar.app.domain
 
 import android.net.Uri
-import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.domain.remote.car.ApiCar
-import java.util.*
+import com.amarchaud.travelcar.data.models.ApiCar
+import com.amarchaud.travelcar.domain.models.AppCar
+import java.util.UUID
 import kotlin.random.Random
 
 class CarFactory {

@@ -3,13 +3,15 @@ package com.amarchaud.travelcar.ui.account.main
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.amarchaud.travelcar.data.repository.user.AppUserRepository
-import com.amarchaud.travelcar.domain.local.user.AppUser
-import com.amarchaud.travelcar.ui.account.main.model.UserListItem
+import com.amarchaud.travelcar.data.repository.AppUserRepository
+import com.amarchaud.travelcar.domain.models.AppUser
+import com.amarchaud.travelcar.ui.account.main.models.AppUserUiModel
+import com.amarchaud.travelcar.ui.account.main.models.UserListItemUiModel
+import com.amarchaud.travelcar.ui.account.main.models.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,51 +21,45 @@ class AccountFragmentViewModel @Inject constructor(
     private val appUserRepository: AppUserRepository
 ) : AndroidViewModel(app) {
 
-    private val _userListInfo = MutableStateFlow<List<UserListItem>?>(null)
-    val userInfo = _userListInfo.asStateFlow()
+    private val _userListInfoUiModel = MutableStateFlow<List<UserListItemUiModel>?>(null)
+    val userInfoUiModel = _userListInfoUiModel.asStateFlow()
 
-    var user: AppUser? = null
+    var userUiModel: AppUserUiModel? = null
         private set
 
     init {
         viewModelScope.launch {
-            appUserRepository.getUserFlow().collect {
-                user = it
-                _userListInfo.value = transformUserToListItem(it)
+            appUserRepository.getUserFlow().collect { user ->
+                userUiModel = user?.toUiModel()
+                _userListInfoUiModel.update { transformUserToListItem(user) }
             }
         }
     }
 
-    fun updateUser(appUser: AppUser) {
-        viewModelScope.launch {
-            appUserRepository.manageUser(appUser) // flow will update ui
-        }
-    }
-
-    private fun transformUserToListItem(appUser: AppUser?): List<UserListItem>? {
+    private fun transformUserToListItem(appUser: AppUser?): List<UserListItemUiModel> {
 
         if (appUser == null) {
             return emptyList()
         }
 
-        val l = mutableListOf<UserListItem>()
+        val l = buildList {
+            if (appUser.photoUri == null) {
+                add(UserListItemUiModel.NoPhoto(appUser.firstName?.get(0) ?: '?'))
+            } else {
+               add(UserListItemUiModel.Photo(appUser.photoUri!!))
+            }
 
-        if (appUser.photoUri == null) {
-            l.add(UserListItem.NoPhoto(appUser.firstName?.get(0) ?: '?'))
-        } else {
-            l.add(UserListItem.Photo(appUser.photoUri!!))
-        }
+            appUser.firstName?.let {
+               add(UserListItemUiModel.Identity(it, appUser.lastName))
+            }
 
-        appUser.firstName?.let {
-            l.add(UserListItem.Identity(it, appUser.lastName))
-        }
+            appUser.address?.let {
+                add(UserListItemUiModel.Address(it))
+            }
 
-        appUser.address?.let {
-            l.add(UserListItem.Address(it))
-        }
-
-        appUser.birthday?.let {
-            l.add(UserListItem.Birthday(it))
+            appUser.birthday?.let {
+                add(UserListItemUiModel.Birthday(it))
+            }
         }
 
         return l

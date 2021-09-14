@@ -1,9 +1,9 @@
 package com.amarchaud.travelcar.utils.translator
 
-import com.amarchaud.travelcar.domain.db.car.CarWithOptions
-import com.amarchaud.travelcar.domain.db.car.EntityCar
-import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.domain.remote.car.ApiCar
+import com.amarchaud.travelcar.data.models.ApiCar
+import com.amarchaud.travelcar.data.models.CarWithOptions
+import com.amarchaud.travelcar.data.models.EntityCar
+import com.amarchaud.travelcar.domain.models.AppCar
 
 object CarTranslator {
 

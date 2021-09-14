@@ -1,7 +1,11 @@
 package com.amarchaud.travelcar.data.db
 
-import androidx.room.*
-import com.amarchaud.travelcar.domain.db.user.EntityUser
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
+import com.amarchaud.travelcar.data.models.EntityUser
 import kotlinx.coroutines.flow.Flow
 
 @Dao

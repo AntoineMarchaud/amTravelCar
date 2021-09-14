@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.SharedElementCallback
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.ActivityDetailCarBinding
-import com.amarchaud.travelcar.domain.local.car.AppCar
+import com.amarchaud.travelcar.ui.car.search.model.AppCarUiModel
 import com.amarchaud.travelcar.utils.extensions.toReadableString
 
 class DetailCarActivity : AppCompatActivity() {
@@ -24,7 +24,7 @@ class DetailCarActivity : AppCompatActivity() {
         const val ARG_NAME_TRANSITION_OPTIONS = "arg_transition_options"
     }
 
-    private val appCar by lazy { intent.getParcelableExtra<AppCar>(ARG_CAR) }
+    private val appCar by lazy { intent.getParcelableExtra<AppCarUiModel>(ARG_CAR) }
     private val appImageSaved by lazy { intent.getParcelableExtra<Bitmap>(ARG_CAR_IMAGE_SAVED) }
 
     override fun onCreate(savedInstanceState: Bundle?) {

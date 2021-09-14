@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.amarchaud.travelcar.R
-import com.amarchaud.travelcar.databinding.*
-import com.amarchaud.travelcar.ui.account.main.model.UserListItem
+import com.amarchaud.travelcar.databinding.ItemAccountAddressBinding
+import com.amarchaud.travelcar.databinding.ItemAccountBirthdayBinding
+import com.amarchaud.travelcar.databinding.ItemAccountNameBinding
+import com.amarchaud.travelcar.databinding.ItemAccountNoPhotoBinding
+import com.amarchaud.travelcar.databinding.ItemAccountPhotoBinding
+import com.amarchaud.travelcar.ui.account.main.models.UserListItemUiModel
 import com.amarchaud.travelcar.utils.extensions.toLongDate
 import com.bumptech.glide.Glide
 
-
-class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListItem.DIFF_CALLBACK) {
+class UserAdapter : ListAdapter<UserListItemUiModel, UserAdapter.ViewHolder>(UserListItemUiModel.DIFF_CALLBACK) {
 
     private enum class Type {
         PHOTO,
@@ -26,11 +29,11 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is UserListItem.Photo -> Type.PHOTO.ordinal
-            is UserListItem.NoPhoto -> Type.NO_PHOTO.ordinal
-            is UserListItem.Identity -> Type.NAME.ordinal
-            is UserListItem.Address -> Type.ADDRESS.ordinal
-            is UserListItem.Birthday -> Type.BIRTHDAY.ordinal
+            is UserListItemUiModel.Photo -> Type.PHOTO.ordinal
+            is UserListItemUiModel.NoPhoto -> Type.NO_PHOTO.ordinal
+            is UserListItemUiModel.Identity -> Type.NAME.ordinal
+            is UserListItemUiModel.Address -> Type.ADDRESS.ordinal
+            is UserListItemUiModel.Birthday -> Type.BIRTHDAY.ordinal
         }
     }
 
@@ -53,11 +56,11 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         val item = getItem(position)
         item?.let {
             when (holder) {
-                is ViewHolder.Photo -> holder.bind(it as UserListItem.Photo)
-                is ViewHolder.NoPhoto -> holder.bind(it as UserListItem.NoPhoto)
-                is ViewHolder.Name -> holder.bind(it as UserListItem.Identity)
-                is ViewHolder.Address -> holder.bind(it as UserListItem.Address)
-                is ViewHolder.Birthday -> holder.bind(it as UserListItem.Birthday)
+                is ViewHolder.Photo -> holder.bind(it as UserListItemUiModel.Photo)
+                is ViewHolder.NoPhoto -> holder.bind(it as UserListItemUiModel.NoPhoto)
+                is ViewHolder.Name -> holder.bind(it as UserListItemUiModel.Identity)
+                is ViewHolder.Address -> holder.bind(it as UserListItemUiModel.Address)
+                is ViewHolder.Birthday -> holder.bind(it as UserListItemUiModel.Birthday)
             }
         }
     }
@@ -65,7 +68,7 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
     sealed class ViewHolder(viewBinding: ViewBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
         class Photo(private val binding: ItemAccountPhotoBinding) : ViewHolder(binding) {
-            fun bind(item: UserListItem.Photo) = with(binding) {
+            fun bind(item: UserListItemUiModel.Photo) = with(binding) {
                 Glide.with(binding.root.context)
                     .load(item.uri)
                     .into(binding.accountPhoto)
@@ -73,13 +76,13 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         }
 
         class NoPhoto(private val binding: ItemAccountNoPhotoBinding) : ViewHolder(binding) {
-            fun bind(item: UserListItem.NoPhoto) = with(binding) {
+            fun bind(item: UserListItemUiModel.NoPhoto) = with(binding) {
                 firstLetter.text = item.firstLetter.toString()
             }
         }
 
         class Name(private val binding: ItemAccountNameBinding) : ViewHolder(binding) {
-            fun bind(item: UserListItem.Identity) = with(binding) {
+            fun bind(item: UserListItemUiModel.Identity) = with(binding) {
                 if (item.lastName == null) {
                     accountName.text = item.firstName
                 } else {
@@ -89,7 +92,7 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         }
 
         class Address(private val binding: ItemAccountAddressBinding) : ViewHolder(binding) {
-            fun bind(item: UserListItem.Address) = with(binding) {
+            fun bind(item: UserListItemUiModel.Address) = with(binding) {
                 address.text = item.address
                 goToMap.setOnClickListener {
                     val map = "https://maps.google.co.in/maps?q=${item.address}"
@@ -100,7 +103,7 @@ class UserAdapter : ListAdapter<UserListItem, UserAdapter.ViewHolder>(UserListIt
         }
 
         class Birthday(private val binding: ItemAccountBirthdayBinding) : ViewHolder(binding) {
-            fun bind(item: UserListItem.Birthday) = with(binding) {
+            fun bind(item: UserListItemUiModel.Birthday) = with(binding) {
                 birthday.text = item.birthday.toLongDate()
             }
         }

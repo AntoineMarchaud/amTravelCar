@@ -18,24 +18,41 @@ import com.amarchaud.travelcar.databinding.ItemSearchCarBinding
 import com.amarchaud.travelcar.databinding.ItemSearchErrorBinding
 import com.amarchaud.travelcar.databinding.ItemSearchLoaderBinding
 import com.amarchaud.travelcar.databinding.ItemSearchNothingBinding
-import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.ui.car.search.model.CarListItem
+import com.amarchaud.travelcar.ui.car.search.model.AppCarUiModel
+import com.amarchaud.travelcar.ui.car.search.model.CarListItemUiModel
 import com.amarchaud.travelcar.utils.extensions.toReadableString
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-
 interface CarListener {
     fun onCarClicked(
-        appCar: AppCar,
+        appCar: AppCarUiModel,
         position: Int,
         carImage: Bitmap,
         vararg p: androidx.core.util.Pair<View, String>
     )
 }
 
+/**
+ * Example de truc simple si on a qu'un seul type dobjet qui arrive dans la liste
+ */
+class OnlyCarAdapter(private val listener: CarListener?) :
+    ListAdapter<CarListItemUiModel.Car, CarAdapter.ViewHolder.Car>(CarListItemUiModel.CAR_DIFF_CALLBACK) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarAdapter.ViewHolder.Car {
+        val binding =
+            ItemSearchCarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CarAdapter.ViewHolder.Car(binding)
+    }
+
+    override fun onBindViewHolder(holder: CarAdapter.ViewHolder.Car, position: Int) {
+        val item = getItem(position)
+        item?.let { holder.bind(it, listener) }
+    }
+}
+
 class CarAdapter(private val listener: CarListener?) :
-    ListAdapter<CarListItem, CarAdapter.ViewHolder>(CarListItem.DIFF_CALLBACK) {
+    ListAdapter<CarListItemUiModel, CarAdapter.ViewHolder>(CarListItemUiModel.DIFF_CALLBACK) {
 
     private enum class Type {
         LOADING,
@@ -46,10 +63,10 @@ class CarAdapter(private val listener: CarListener?) :
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CarListItem.Loading -> Type.LOADING.ordinal
-            is CarListItem.Nothing -> Type.NOTHING.ordinal
-            is CarListItem.Car -> Type.ITEM.ordinal
-            is CarListItem.Error -> Type.ERROR.ordinal
+            is CarListItemUiModel.Loading -> Type.LOADING.ordinal
+            is CarListItemUiModel.Nothing -> Type.NOTHING.ordinal
+            is CarListItemUiModel.Car -> Type.ITEM.ordinal
+            is CarListItemUiModel.Error -> Type.ERROR.ordinal
         }
     }
 
@@ -59,10 +76,38 @@ class CarAdapter(private val listener: CarListener?) :
     ): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            Type.LOADING.ordinal -> ViewHolder.Loading(ItemSearchLoaderBinding.inflate(layoutInflater, parent, false))
-            Type.NOTHING.ordinal -> ViewHolder.Nothing(ItemSearchNothingBinding.inflate(layoutInflater, parent, false))
-            Type.ITEM.ordinal -> ViewHolder.Car(ItemSearchCarBinding.inflate(layoutInflater, parent, false))
-            Type.ERROR.ordinal -> ViewHolder.Error(ItemSearchErrorBinding.inflate(layoutInflater, parent, false))
+            Type.LOADING.ordinal -> ViewHolder.Loading(
+                ItemSearchLoaderBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
+            )
+
+            Type.NOTHING.ordinal -> ViewHolder.Nothing(
+                ItemSearchNothingBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
+            )
+
+            Type.ITEM.ordinal -> ViewHolder.Car(
+                ItemSearchCarBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
+            )
+
+            Type.ERROR.ordinal -> ViewHolder.Error(
+                ItemSearchErrorBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
+            )
+
             else -> throw Exception("unknown viewType : $viewType")
         }
     }
@@ -80,30 +125,33 @@ class CarAdapter(private val listener: CarListener?) :
         onBindViewHolder(holder, position, emptyList())
     }
 
-    private fun bind(holder: ViewHolder, item: CarListItem) {
+    private fun bind(holder: ViewHolder, item: CarListItemUiModel) {
         when (holder) {
             is ViewHolder.Loading -> {
                 //nothing
             }
-            is ViewHolder.Error -> holder.bind(item as CarListItem.Error)
-            is ViewHolder.Car -> holder.bind(item as CarListItem.Car, listener)
-        }
-    }
 
-    private fun update(holder: ViewHolder, item: CarListItem, position: Int) {
-        when (holder) {
-            is ViewHolder.Car -> {
-                (item as? CarListItem.Car)?.let {
-                    holder.update(it)
-                }
-
-            }
-            else -> {
+            is ViewHolder.Error -> holder.bind(item as CarListItemUiModel.Error)
+            is ViewHolder.Car -> holder.bind(item as CarListItemUiModel.Car, listener)
+            is ViewHolder.Nothing -> {
                 // nothing
             }
         }
     }
 
+    private fun update(holder: ViewHolder, item: CarListItemUiModel, position: Int) {
+        when (holder) {
+            is ViewHolder.Car -> {
+                (item as? CarListItemUiModel.Car)?.let {
+                    holder.update(it)
+                }
+            }
+
+            else -> {
+                // nothing
+            }
+        }
+    }
 
     sealed class ViewHolder(viewBinding: ViewBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
@@ -138,14 +186,13 @@ class CarAdapter(private val listener: CarListener?) :
                         }
 
                         setText(spannableStr)
-
                     } else {
                         setText(text)
                     }
                 } ?: setText(text)
             }
 
-            private fun highLight(item: CarListItem.Car) = with(binding) {
+            private fun highLight(item: CarListItemUiModel.Car) = with(binding) {
                 val makeAndModel = StringBuilder()
                 makeAndModel.append(item.appCar.make)
                 makeAndModel.append(" ")
@@ -164,11 +211,11 @@ class CarAdapter(private val listener: CarListener?) :
                 }
             }
 
-            fun update(item: CarListItem.Car) {
+            fun update(item: CarListItemUiModel.Car) {
                 highLight(item)
             }
 
-            fun bind(item: CarListItem.Car, listener: CarListener?) = with(binding) {
+            fun bind(item: CarListItemUiModel.Car, listener: CarListener?) = with(binding) {
 
                 root.setOnClickListener {
 
@@ -229,13 +276,10 @@ class CarAdapter(private val listener: CarListener?) :
             }
         }
 
-
         class Error(private val binding: ItemSearchErrorBinding) : ViewHolder(binding) {
-            fun bind(item: CarListItem.Error) = with(binding) {
+            fun bind(item: CarListItemUiModel.Error) = with(binding) {
                 this.error.text = item.error
             }
         }
     }
-
-
 }

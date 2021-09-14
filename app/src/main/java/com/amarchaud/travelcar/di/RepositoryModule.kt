@@ -1,9 +1,9 @@
 package com.amarchaud.travelcar.di
 
-import com.amarchaud.travelcar.data.repository.car.AppCarRepository
-import com.amarchaud.travelcar.data.repository.car.CarRepository
-import com.amarchaud.travelcar.data.repository.user.AppUserRepository
-import com.amarchaud.travelcar.data.repository.user.UserRepository
+import com.amarchaud.travelcar.data.repository.AppCarRepository
+import com.amarchaud.travelcar.data.repository.AppUserRepository
+import com.amarchaud.travelcar.domain.repository.CarRepository
+import com.amarchaud.travelcar.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.amarchaud.travelcar.domain.db.car
+package com.amarchaud.travelcar.data.models
 
 import androidx.room.Embedded
 import androidx.room.Junction

@@ -1,6 +1,6 @@
-package com.amarchaud.travelcar.data.repository.car
+package com.amarchaud.travelcar.domain.repository
 
-import com.amarchaud.travelcar.domain.local.car.AppCar
+import com.amarchaud.travelcar.domain.models.AppCar
 import kotlinx.coroutines.flow.Flow
 
 interface CarRepository {

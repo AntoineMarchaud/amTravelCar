@@ -1,37 +1,32 @@
 package com.amarchaud.travelcar.app.repository
 
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amarchaud.travelcar.app.CoroutineTestRule
 import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockApiCar
-import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockCar
 import com.amarchaud.travelcar.data.db.AppDb
 import com.amarchaud.travelcar.data.db.TravelCarDao
+import com.amarchaud.travelcar.data.models.EntityCar
+import com.amarchaud.travelcar.data.models.EntityCarOptionCrossRef
+import com.amarchaud.travelcar.data.models.EntityOption
 import com.amarchaud.travelcar.data.remote.TravelCarApi
-import com.amarchaud.travelcar.data.repository.car.AppCarRepository
-import com.amarchaud.travelcar.domain.db.car.EntityCar
-import com.amarchaud.travelcar.domain.local.car.AppCar
-import com.amarchaud.travelcar.domain.remote.car.ApiCar
+import com.amarchaud.travelcar.data.repository.AppCarRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.robolectric.RobolectricTestRunner
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.mock.Calls
 import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(AndroidJUnit4::class) // Failed to instantiate test runner class androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner ??????
 class AppCarRepositoryTest {
 
     private lateinit var mockRepo: AppCarRepository
@@ -67,11 +62,10 @@ class AppCarRepositoryTest {
 
     @Test
     @Throws(Exception::class)
-    fun `getCarsFromDbFlow - ok`() = runBlocking {
+    fun `getCarsFromDbFlow - ok`() = runTest {
 
         val response= Response.success((listOf(mockApiCar())))
-        val mockCall = Calls.response(response)
-        Mockito.`when`(carApiMock.getCars()).thenReturn(mockCall)
+        Mockito.`when`(carApiMock.getCars()).thenReturn(response)
 
         userDao.addCar(
             EntityCar(
@@ -96,5 +90,74 @@ class AppCarRepositoryTest {
         Assert.assertTrue(!listCars.isNullOrEmpty())
         Assert.assertTrue(listCars?.size == 2)
         Assert.assertTrue(listCars?.get(0)?.make == "Ferrari")
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `cars with common option - ok`() = runTest {
+
+        val response= Response.success((listOf(mockApiCar())))
+        Mockito.`when`(carApiMock.getCars()).thenReturn(response)
+
+        val idCar1 = userDao.addCar(
+            EntityCar(
+                make = "Ferrari",
+                model = "Stradale",
+                year = 2020,
+                picture = null,
+                equipments = null
+            )
+        )
+        val idCar2 = userDao.addCar(
+            EntityCar(
+                make = "Renault",
+                model = "Megane",
+                year = 2000,
+                picture = null,
+                equipments = null
+            )
+        )
+
+        val id1 = userDao.addOption(
+            EntityOption(
+            option = "GPS"
+        )
+        )
+
+
+        val id2 = userDao.addOption(
+            EntityOption(
+            option = "Camera"
+        )
+        )
+
+        userDao.addRelation(
+            EntityCarOptionCrossRef(
+            carId = idCar1,
+            optionId = id1
+        )
+        )
+
+        userDao.addRelation(
+            EntityCarOptionCrossRef(
+            carId = idCar2,
+            optionId = id2
+        )
+        )
+
+        // common
+        userDao.addRelation(
+            EntityCarOptionCrossRef(
+            carId = idCar1,
+            optionId = id2
+        )
+        )
+
+
+        val listCars = mockRepo.getCarsFlow().first()
+        Assert.assertTrue(!listCars.isNullOrEmpty())
+        Assert.assertTrue(listCars?.size == 2)
+        Assert.assertTrue(listCars?.get(0)?.equipments?.contains("GPS") ?: false)
+        Assert.assertTrue(listCars?.get(0)?.equipments?.contains("Camera") ?: false)
     }
 }

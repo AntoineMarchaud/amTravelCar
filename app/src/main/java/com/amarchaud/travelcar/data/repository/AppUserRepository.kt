@@ -1,12 +1,12 @@
-package com.amarchaud.travelcar.data.repository.user
+package com.amarchaud.travelcar.data.repository
 
 import com.amarchaud.travelcar.data.db.UserDao
 import com.amarchaud.travelcar.di.DispatcherModule
-import com.amarchaud.travelcar.domain.local.user.AppUser
+import com.amarchaud.travelcar.domain.models.AppUser
+import com.amarchaud.travelcar.domain.repository.UserRepository
 import com.amarchaud.travelcar.utils.translator.UserTranslator.toAppUser
 import com.amarchaud.travelcar.utils.translator.UserTranslator.toEntityUser
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext

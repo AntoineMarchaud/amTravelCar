@@ -1,8 +1,11 @@
 package com.amarchaud.travelcar.ui
 
 import android.os.Bundle
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.os.BuildCompat
 import androidx.fragment.app.Fragment
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.ActivityMainBinding
@@ -24,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                             displayFragment(it, SearchFragment.TAG)
                         } ?: displayFragment(SearchFragment.newInstance(), SearchFragment.TAG)
                     }
+
                     R.id.navigation_account -> {
                         supportFragmentManager.findFragmentByTag(AccountFragment.TAG)?.let {
                             displayFragment(it, AccountFragment.TAG)
@@ -58,15 +61,17 @@ class MainActivity : AppCompatActivity() {
                 navigation.selectedItemId = R.id.navigation_search
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun displayFragment(fragment: Fragment, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.mainTabContainer, fragment, tag)
         transaction.commit()
-    }
-
-    override fun onBackPressed() {
-        finish()
     }
 }

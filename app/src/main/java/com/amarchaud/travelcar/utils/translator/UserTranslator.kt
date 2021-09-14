@@ -1,7 +1,7 @@
 package com.amarchaud.travelcar.utils.translator
 
-import com.amarchaud.travelcar.domain.db.user.EntityUser
-import com.amarchaud.travelcar.domain.local.user.AppUser
+import com.amarchaud.travelcar.data.models.EntityUser
+import com.amarchaud.travelcar.domain.models.AppUser
 
 object UserTranslator {
 

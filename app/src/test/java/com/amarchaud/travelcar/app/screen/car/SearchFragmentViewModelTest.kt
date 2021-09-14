@@ -3,19 +3,20 @@ package com.amarchaud.travelcar.app.screen.car
 import android.app.Application
 import android.net.Uri
 import androidx.annotation.CallSuper
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.amarchaud.travelcar.app.CoroutineTestRule
 import com.amarchaud.travelcar.app.domain.CarFactory.Companion.mockCar
-import com.amarchaud.travelcar.data.repository.car.CarRepository
-import com.amarchaud.travelcar.domain.local.car.AppCar
+import com.amarchaud.travelcar.domain.models.AppCar
+import com.amarchaud.travelcar.domain.repository.CarRepository
 import com.amarchaud.travelcar.ui.car.search.SearchFragmentViewModel
-import com.amarchaud.travelcar.ui.car.search.model.CarListItem
+import com.amarchaud.travelcar.ui.car.search.model.CarListItemUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -81,13 +82,13 @@ class SearchFragmentViewModelTest {
     }
 
     @Test
-    fun `Int flow Ok`() = testCoroutineRule.dispatcher.runBlockingTest {
+    fun `Int flow Ok`() = runTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsSimulateUpdateFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
-        val result = arrayListOf<List<CarListItem>>()
-        val job = launch { viewModel.cars.toList(result) }
+        val result = arrayListOf<List<CarListItemUiModel>>()
+        val job = launch { viewModel.carsUiModel.toList(result) }
 
         Assert.assertTrue(result.size == 1)
 
@@ -95,7 +96,7 @@ class SearchFragmentViewModelTest {
         with(result[0]) {
             Assert.assertTrue(size == 5)
             this.forEach {
-                Assert.assertTrue(it is CarListItem.Car)
+                Assert.assertTrue(it is CarListItemUiModel.Car)
             }
         }
 
@@ -104,7 +105,7 @@ class SearchFragmentViewModelTest {
         with(result[1]) {
             Assert.assertTrue(size == 2)
             this.forEach {
-                Assert.assertTrue(it is CarListItem.Car)
+                Assert.assertTrue(it is CarListItemUiModel.Car)
             }
         }
 
@@ -112,7 +113,7 @@ class SearchFragmentViewModelTest {
     }
 
     @Test
-    fun `filterNoSuggestion Ok`() = testCoroutineRule.dispatcher.runBlockingTest {
+    fun `filterNoSuggestion Ok`() = runTest {
 
         Mockito.`when`(carRepositoryMock.getCarsFlow()).thenReturn(carsFlow)
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
@@ -120,15 +121,15 @@ class SearchFragmentViewModelTest {
         viewModel.filterWithSuggestions("Peu")
 
         var job: Job?
-        val result = arrayListOf<List<CarListItem>>()
+        val result = arrayListOf<List<CarListItemUiModel>>()
 
         result.clear()
-        job = launch { viewModel.cars.toList(result) }
+        job = launch { viewModel.carsUiModel.toList(result) }
         Assert.assertTrue(result.size == 1)
         result[0].let {
             Assert.assertTrue(it.size == 1)
             it[0].let {
-                (it as CarListItem.Car).let {
+                (it as CarListItemUiModel.Car).let {
                     Assert.assertTrue(it.appCar.make == "Peugeot")
                 }
             }
@@ -138,12 +139,12 @@ class SearchFragmentViewModelTest {
 
         result.clear()
         viewModel.filterWithSuggestions("atti")
-        job = launch { viewModel.cars.toList(result) }
+        job = launch { viewModel.carsUiModel.toList(result) }
         Assert.assertTrue(result.size == 1)
         result[0].let {
             Assert.assertTrue(it.size == 1)
             it[0].let {
-                (it as CarListItem.Car).let {
+                (it as CarListItemUiModel.Car).let {
                     Assert.assertTrue(it.appCar.make == "Bugatti")
                 }
             }
@@ -152,7 +153,7 @@ class SearchFragmentViewModelTest {
 
         result.clear()
         viewModel.filterWithSuggestions("20")
-        job = launch { viewModel.cars.toList(result) }
+        job = launch { viewModel.carsUiModel.toList(result) }
         Assert.assertTrue(result.size == 1)
         result[0].let {
             Assert.assertTrue(it.size == 3)
@@ -167,17 +168,17 @@ class SearchFragmentViewModelTest {
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         val job: Job?
-        val result = arrayListOf<List<CarListItem>>()
+        val result = arrayListOf<List<CarListItemUiModel>>()
 
         viewModel.filterWithSuggestions("Peugoet", listOf("Peugeot", "Peujeot", "Peugeoc"))
 
         result.clear()
-        job = launch { viewModel.cars.toList(result) }
+        job = launch { viewModel.carsUiModel.toList(result) }
         Assert.assertTrue(result.size == 1)
         result[0].let {
             Assert.assertTrue(it.size == 1)
             it[0].let {
-                (it as CarListItem.Car).let {
+                (it as CarListItemUiModel.Car).let {
                     Assert.assertTrue(it.appCar.make == "Peugeot")
                 }
             }
@@ -193,16 +194,16 @@ class SearchFragmentViewModelTest {
         viewModel = SearchFragmentViewModel(applicationMock, carRepositoryMock)
 
         val job: Job?
-        val result = arrayListOf<List<CarListItem>>()
+        val result = arrayListOf<List<CarListItemUiModel>>()
 
         viewModel.filterWithSuggestions("sdoufhuisdlofhioulmdzsfoidlmhs")
 
         result.clear()
-        job = launch { viewModel.cars.toList(result) }
+        job = launch { viewModel.carsUiModel.toList(result) }
         Assert.assertTrue(result.size == 1)
         result[0].let {
             Assert.assertTrue(it.size == 1)
-            Assert.assertTrue(it[0] is CarListItem.Nothing)
+            Assert.assertTrue(it[0] is CarListItemUiModel.Nothing)
         }
         job.cancel()
 

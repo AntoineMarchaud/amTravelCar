@@ -3,8 +3,9 @@ package com.amarchaud.travelcar.ui.account.modify
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.amarchaud.travelcar.data.repository.user.UserRepository
-import com.amarchaud.travelcar.domain.local.user.AppUser
+import com.amarchaud.travelcar.domain.models.AppUser
+import com.amarchaud.travelcar.domain.repository.UserRepository
+import com.amarchaud.travelcar.ui.account.main.models.AppUserUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +17,7 @@ class ModifyAccountFragmentViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
 
     //Save state of screen
-    var appUser: AppUser? = null
+    var appUser: AppUserUiModel? = null
 
     fun somethingChanged() = appUser?.photoUri != null
             || !appUser?.firstName.isNullOrEmpty()
@@ -31,7 +32,15 @@ class ModifyAccountFragmentViewModel @Inject constructor(
     fun manageUser() {
         appUser?.let {
             viewModelScope.launch {
-                userRepository.manageUser(it)
+                userRepository.manageUser(
+                    AppUser(
+                        photoUri = it.photoUri,
+                        firstName = it.firstName,
+                        lastName = it.lastName,
+                        address = it.address,
+                        birthday = it.birthday,
+                    )
+                )
             }
         }
 

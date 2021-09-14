@@ -1,4 +1,4 @@
-package com.amarchaud.travelcar.domain.remote.car
+package com.amarchaud.travelcar.data.models
 
 import android.net.Uri
 import com.squareup.moshi.Json

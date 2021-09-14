@@ -2,8 +2,8 @@ package com.amarchaud.travelcar.ui.account.modify
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -13,15 +13,18 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.amarchaud.travelcar.R
 import com.amarchaud.travelcar.databinding.FragmentModifyAccountBinding
-import com.amarchaud.travelcar.domain.local.user.AppUser
+import com.amarchaud.travelcar.ui.account.main.models.AppUserUiModel
 import com.amarchaud.travelcar.ui.account.modify.photo_dialog.ChoicePhotoDialog
 import com.amarchaud.travelcar.utils.extensions.nowToMilliseconds
+import com.amarchaud.travelcar.utils.extensions.overrideActivityTransitionCompat
+import com.amarchaud.travelcar.utils.extensions.textChanges
 import com.amarchaud.travelcar.utils.extensions.toMilliseconds
 import com.amarchaud.travelcar.utils.extensions.toShortDate
-import com.amarchaud.travelcar.utils.textChanges
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
@@ -32,16 +35,13 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import org.threeten.bp.Instant
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.io.File
-import java.util.*
-
 
 @AndroidEntryPoint
 class ModifyAccountActivity : AppCompatActivity() {
@@ -60,7 +60,7 @@ class ModifyAccountActivity : AppCompatActivity() {
     }
 
     // immutable, do not touch to this pointer
-    private val userToModify by lazy { intent.getParcelableExtra<AppUser?>(ARG_USER_IN) }
+    private val userToModify by lazy { intent.getParcelableExtra<AppUserUiModel?>(ARG_USER_IN) }
 
     // manage autocomplete
     private val autoCompleteToken by lazy { AutocompleteSessionToken.newInstance() }
@@ -85,7 +85,6 @@ class ModifyAccountActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -113,7 +112,10 @@ class ModifyAccountActivity : AppCompatActivity() {
                     putExtra(ARG_USER_SAVED, viewModel.appUser)
                 })*/
                 finish()
-                overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
+                this@ModifyAccountActivity.overrideActivityTransitionCompat(
+                    R.anim.exit_nothing,
+                    R.anim.exit_to_right
+                )
             }
 
             deleteButton.isEnabled = userToModify != null
@@ -122,14 +124,17 @@ class ModifyAccountActivity : AppCompatActivity() {
                     viewModel.eraseAccount()
                     setResult(RESULT_CANCELED)
                     finish()
-                    overridePendingTransition(R.anim.exit_nothing, R.anim.exit_to_right)
+                    this@ModifyAccountActivity.overrideActivityTransitionCompat(
+                        R.anim.exit_nothing,
+                        R.anim.exit_to_right
+                    )
                 }
             }
         }
 
         if (savedInstanceState == null) {
             if (userToModify == null) {
-                viewModel.appUser = AppUser() // create empty user
+                viewModel.appUser = AppUserUiModel() // create empty user
             } else {
                 viewModel.appUser = userToModify?.copy()
             }
@@ -140,7 +145,6 @@ class ModifyAccountActivity : AppCompatActivity() {
         handleUser(viewModel.appUser)
     }
 
-
     private fun manageChoicePhotoDialog() {
         val dialog = ChoicePhotoDialog()
         dialog.show(supportFragmentManager, "ChoicePhotoDialog")
@@ -149,9 +153,11 @@ class ModifyAccountActivity : AppCompatActivity() {
                 ChoicePhotoDialog.Companion.Choice.TAKE_PHOTO -> {
                     launchTakePhoto()
                 }
+
                 ChoicePhotoDialog.Companion.Choice.SELECT_PHOTO -> {
                     launchSelectPhoto()
                 }
+
                 else -> {
                     // dismiss, nothing to do
                 }
@@ -181,14 +187,15 @@ class ModifyAccountActivity : AppCompatActivity() {
         picker.show(supportFragmentManager, "datePicker")
         picker.addOnPositiveButtonClickListener {
             it?.let {
-                val birthdayDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                val birthdayDate =
+                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
                 viewModel.appUser?.birthday = birthdayDate // save
                 binding.birthdayEditText.setText(birthdayDate.toShortDate())
             }
         }
     }
 
-    private fun handleUser(user: AppUser?) {
+    private fun handleUser(user: AppUserUiModel?) {
         user?.let {
             with(binding) {
                 this.firstNameEditText.setText(user.firstName)
@@ -210,40 +217,42 @@ class ModifyAccountActivity : AppCompatActivity() {
         /**
          * Management saveButton isEnable status
          */
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
 
-            with(binding) {
-                saveButton.isEnabled = false
-                combine(
-                    firstNameEditText.textChanges(),
-                    lastNameEditText.textChanges(),
-                    addressEditText.textChanges(),
-                    birthdayEditText.textChanges()
-                ) { firstName, lastName, address, birthday ->
+                with(binding) {
+                    saveButton.isEnabled = false
+                    combine(
+                        firstNameEditText.textChanges(),
+                        lastNameEditText.textChanges(),
+                        addressEditText.textChanges(),
+                        birthdayEditText.textChanges()
+                    ) { firstName, lastName, address, birthday ->
 
-                    // save datas
-                    if (!firstName.isNullOrEmpty()) {
-                        viewModel.appUser?.firstName = firstName.toString()
-                    } else {
-                        viewModel.appUser?.firstName = null
+                        // save datas
+                        if (!firstName.isNullOrEmpty()) {
+                            viewModel.appUser?.firstName = firstName.toString()
+                        } else {
+                            viewModel.appUser?.firstName = null
+                        }
+
+                        if (!lastName.isNullOrEmpty()) {
+                            viewModel.appUser?.lastName = lastName.toString()
+                        } else {
+                            viewModel.appUser?.lastName = null
+                        }
+
+                        if (!address.isNullOrEmpty()) {
+                            viewModel.appUser?.address = address.toString()
+                        } else {
+                            viewModel.appUser?.address = null
+                        }
+
+                        !firstName.isNullOrEmpty()
+
+                    }.collectLatest { isEnable ->
+                        saveButton.isEnabled = isEnable
                     }
-
-                    if (!lastName.isNullOrEmpty()) {
-                        viewModel.appUser?.lastName = lastName.toString()
-                    } else {
-                        viewModel.appUser?.lastName = null
-                    }
-
-                    if (!address.isNullOrEmpty()) {
-                        viewModel.appUser?.address = address.toString()
-                    } else {
-                        viewModel.appUser?.address = null
-                    }
-
-                    !firstName.isNullOrEmpty()
-
-                }.collectLatest { isEnable ->
-                    saveButton.isEnabled = isEnable
                 }
             }
         }
@@ -251,40 +260,45 @@ class ModifyAccountActivity : AppCompatActivity() {
         /**
          * Manage address search
          */
-        lifecycleScope.launchWhenCreated {
-            binding.addressEditText.textChanges().collectLatest {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                binding.addressEditText.textChanges().collectLatest {
 
-                val request = predictionsRequest
-                    .setQuery(it.toString())
-                    .build()
+                    val request = predictionsRequest
+                        .setQuery(it.toString())
+                        .build()
 
-                placesClient
-                    .findAutocompletePredictions(request)
-                    .addOnSuccessListener { response: FindAutocompletePredictionsResponse -> // if place is found
+                    placesClient
+                        .findAutocompletePredictions(request)
+                        .addOnSuccessListener { response: FindAutocompletePredictionsResponse -> // if place is found
 
-                        val mutableSearchList = mutableListOf<String>()
-                        response.autocompletePredictions.forEach {
-                            mutableSearchList.add(
-                                getString(R.string.account_modify_displayed_address_search, it.getPrimaryText(null), it.getSecondaryText(null))
+                            val mutableSearchList = mutableListOf<String>()
+                            response.autocompletePredictions.forEach {
+                                mutableSearchList.add(
+                                    getString(
+                                        R.string.account_modify_displayed_address_search,
+                                        it.getPrimaryText(null),
+                                        it.getSecondaryText(null)
+                                    )
+                                )
+                            }
+
+                            val adapter = ArrayAdapter(
+                                this@ModifyAccountActivity,
+                                android.R.layout.simple_dropdown_item_1line,
+                                mutableSearchList
                             )
+                            binding.addressEditText.setAdapter(adapter)
                         }
-
-                        val adapter = ArrayAdapter(
-                            this@ModifyAccountActivity,
-                            android.R.layout.simple_dropdown_item_1line,
-                            mutableSearchList
-                        )
-                        binding.addressEditText.setAdapter(adapter)
-                    }
-                    .addOnFailureListener { exception: Exception? -> // no connection
-                        if (exception is ApiException) {
-                            Log.e(TAG, "Place not found: " + exception.statusCode)
+                        .addOnFailureListener { exception: Exception? -> // no connection
+                            if (exception is ApiException) {
+                                Log.e(TAG, "Place not found: " + exception.statusCode)
+                            }
                         }
-                    }
+                }
             }
         }
     }
-
 
     private fun launchSelectPhoto() {
         selectImageFromGalleryResult.launch("image/*")
@@ -299,9 +313,11 @@ class ModifyAccountActivity : AppCompatActivity() {
             userToModify == null && viewModel.somethingChanged() -> { // no account yet
                 displayQuitAlertDialog()
             }
+
             userToModify != null && (userToModify != viewModel.appUser) -> {
                 displayQuitAlertDialog()
             }
+
             else -> {
                 super.onBackPressed()
                 setResult(RESULT_CANCELED)
@@ -333,7 +349,6 @@ class ModifyAccountActivity : AppCompatActivity() {
             .show()
     }
 
-
     private val selectImageFromGalleryResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -344,7 +359,6 @@ class ModifyAccountActivity : AppCompatActivity() {
                 viewModel.appUser?.photoUri = it // save
             }
         }
-
 
     private val permissionCameraResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
